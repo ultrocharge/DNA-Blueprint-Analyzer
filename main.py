@@ -1,25 +1,22 @@
 import pandas as pd
-from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Frame, PageTemplate
 from reportlab.lib import colors
-# from reportlab.lib.colors import red, green
+import json
+import constants as CONSTANTS
 
-extract_col_start = 5 # column F
-extract_col_end = 236 # column IB
-
-csv_file_path = 'assets/Canine SNP Parentage Example.csv'
-pdf_file_path = 'outputs/DNA BLUE PRINT'
+f = open('alphabets.json')
+alphabets = json.load(f)
 
 def generate_pdf_file_path (page_index):
-    return f"{pdf_file_path} {page_index}.pdf"
+    return f"{CONSTANTS.pdf_file_path} {page_index}.pdf"
 
 def process_csv_and_export_pdf():
     # Read the CSV file
-    data = pd.read_csv(csv_file_path)
+    data = pd.read_csv(CONSTANTS.csv_file_path)
 
     # Extract the columns from F to IB
-    data_points = data.iloc[:, extract_col_start: extract_col_end]
+    data_points = data.iloc[:, CONSTANTS.extract_col_start: CONSTANTS.extract_col_end]
 
     # Reorder data points and flag discrepancies
     for index, row in data_points.iterrows():
@@ -28,24 +25,17 @@ def process_csv_and_export_pdf():
             if value != 'NR':
                 reordered_row.extend(value.split('/'))
         generate_pdf(reordered_row, index)
-
+    
 def generate_pdf(blue_print_table_data, page_index):
-    # Center text "TIM"
-    center_text = "TIM"
-    center_start_row = 22  # 0-indexed, so 22nd row is the 23rd row
-    center_start_col = 4  # 0-indexed, so 4th col is the 5th column
 
-    # Create the PDF
-    frame_margin_x = 0.3 * inch  # 0.5 inch margin
-    frame_margin_y = 0.4 * inch  # 0.5 inch margin
-    page_content_width = 8 * inch
-    page_content_height = 4 * inch
-    page_width = page_content_width + 2 * frame_margin_x
-    page_height = page_content_height + 2 * frame_margin_y
-    doc = SimpleDocTemplate(generate_pdf_file_path(page_index), pagesize=(page_width, page_height))  # 8x4 inches in points
+    page_width = CONSTANTS.page_content_width + 2 * CONSTANTS.frame_margin_x
+    page_height = CONSTANTS.page_content_height + 2 * CONSTANTS.frame_margin_y
+    
+    # Create PDF (8 * 4 inches)
+    doc = SimpleDocTemplate(generate_pdf_file_path(page_index), pagesize=(page_width, page_height))
 
-    # Define the styles
-    centered = ParagraphStyle(name="Centered", alignment=1, fontSize=12, leading=12, textColor=colors.blue, fontName="Helvetica-Bold")
+    # Define styles
+    centered = ParagraphStyle(name="Centered", alignment=1, fontSize=8, leading=12, textColor=colors.blue, fontName="Helvetica-Bold")
 
     # Create table data
     table_data = []
@@ -54,9 +44,9 @@ def generate_pdf(blue_print_table_data, page_index):
     for row in range(10):
         row_data = []
         for col in range(46):
-            if (center_start_row <= row < center_start_row + 2) and (center_start_col <= col < center_start_col + 3):
-                if row == center_start_row and col == center_start_col:
-                    row_data.append(Paragraph(center_text, centered))
+            if (CONSTANTS.center_start_row <= row < CONSTANTS.center_start_row + 2) and (CONSTANTS.center_start_col <= col < CONSTANTS.center_start_col + 3):
+                if row == CONSTANTS.center_start_row and col == CONSTANTS.center_start_col:
+                    row_data.append(Paragraph(CONSTANTS.center_text, centered))
                 else:
                     row_data.append('')
             else:
@@ -64,36 +54,70 @@ def generate_pdf(blue_print_table_data, page_index):
                 data_index += 1
         table_data.append(row_data)
 
-    # Create the table
-    table = Table(table_data, colWidths=[8 * inch / 46] * 46, rowHeights=[8 * inch / 46] * 10)  # 0.8 inches per column, 0.5 inches per row
+    # Length of row and text
+    row_len = len(row_data)
+    text_len = len(CONSTANTS.center_text)
 
-    # Style the table
-    table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
-        ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
+    # Create table
+    table = Table(table_data, colWidths=[CONSTANTS.page_content_width / 46] * 46, rowHeights=[CONSTANTS.page_content_width / 46] * 10)
+    
+    generate_text(table, CONSTANTS.center_text, row_len, text_len)
 
-        ('TEXTCOLOR', (0, 0), (0, 9), colors.purple),  # Example: Specific cell text color
-        ('FONTNAME', (0, 0), (0, 9), 'Helvetica-Bold'),  # Example: Specific cell font
-        
-        ('TEXTCOLOR', (45, 45), (0, 9), colors.purple),  # Example: Specific cell text color
-        ('FONTNAME', (45, 45), (0, 9), 'Helvetica-Bold')  # Example: Specific cell font
-    ]))
-
-    # Define the frame with margins
-
-    frame = Frame(x1=0, y1=0, width=page_width, height=page_height, leftPadding=frame_margin_x, rightPadding=frame_margin_x, topPadding=frame_margin_y)
+    # Define frame with margins
+    frame = Frame(x1=0, y1=0, width=page_width, height=page_height, leftPadding=CONSTANTS.frame_margin_x, rightPadding=CONSTANTS.frame_margin_x, topPadding=CONSTANTS.frame_margin_y)
 
     # Create a PageTemplate and add the frame to it
     page_template = PageTemplate(id='PageTemplate', frames=[frame])
-
-    # Build the PDF
     doc.addPageTemplates([page_template])
 
-    # Build the PDF
+    # Build PDF
     doc.build([table])
 
     print(f"PDF created successfully: {generate_pdf_file_path(page_index)}")
 
+def generate_text(table, text, row_len, text_len):
+    paddingL = int((row_len - text_len * 5)/(3 + text_len))
+    paddingM = int((row_len - text_len * 3)/(3 + text_len))
+
+    # Letter starting point
+    xL = int((row_len - 5 * text_len - paddingL * (text_len - 1))/2)
+    xM = int((row_len - 3 * text_len - paddingM * (text_len - 1))/2)
+    y = 2
+    cnt = 1
+
+    # Table style
+    table.setStyle(TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME',(0,0),(-1,-1),'Helvetica-Bold'),
+        ('TEXTCOLOR',(0,0),(-1,-1), colors.purple),
+        ('FONTNAME',(1,1),(-2,-2),'Helvetica'),
+        ('TEXTCOLOR',(1,1),(-2,-2), colors.lightgrey),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
+    ]))
+    for t in list(text.upper()):
+        alphabet = alphabets[t]
+        alphabet_size = {}
+        if text_len > 6:
+            alphabet_size = alphabet['medium']
+
+            for i in alphabet_size['coords']: 
+                table.setStyle(TableStyle([
+                    ('TEXTCOLOR',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), colors.purple),
+                    ('FONTNAME',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), 'Helvetica-Bold'),
+            ]))    
+            xM = xM + alphabet_size['meta']['cellWidth'] + paddingM
+            cnt = cnt + 1
+        else:
+            alphabet_size = alphabet['large']
+        
+            for i in alphabet_size['coords']: 
+                table.setStyle(TableStyle([
+                    ('TEXTCOLOR',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), colors.purple),
+                    ('FONTNAME',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), 'Helvetica-Bold'),
+            ]))    
+            xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
+            cnt = cnt + 1
+        
 process_csv_and_export_pdf()
