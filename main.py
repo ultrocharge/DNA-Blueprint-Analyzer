@@ -1,7 +1,6 @@
 import pandas as pd
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Frame, PageTemplate
 from reportlab.lib import colors
 import json
@@ -47,9 +46,6 @@ def generate_pdf(blue_print_table_data, dog_name, page_index):
     # Create PDF (8 * 4 inches)
     doc = SimpleDocTemplate(generate_pdf_file_path(page_index, dog_name), pagesize=(page_width, page_height))
 
-    # Define styles
-    centered = ParagraphStyle(name="Centered", alignment=1, fontSize=8, leading=12, textColor=colors.blue, fontName="Helvetica-Bold")
-
     # Create table data
     table_data = []
     data_index = 0
@@ -59,7 +55,7 @@ def generate_pdf(blue_print_table_data, dog_name, page_index):
         for col in range(46):
             if (CONSTANTS.center_start_row <= row < CONSTANTS.center_start_row + 2) and (CONSTANTS.center_start_col <= col < CONSTANTS.center_start_col + 3):
                 if row == CONSTANTS.center_start_row and col == CONSTANTS.center_start_col:
-                    row_data.append(Paragraph(dog_name[page_index], centered))
+                    row_data.append(Paragraph(dog_name[page_index]))
                 else:
                     row_data.append('')
             else:
@@ -102,10 +98,10 @@ def generate_text(table, text, row_len, text_len):
     table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME',(0, 0),(-1,-1),'Roboto'),
-        ('TEXTCOLOR',(0,0),(-1,-1), colors.lightgrey),
+        ('TEXTCOLOR',(0,0),(-1,-1), CONSTANTS.grey),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('BOX', (0, 0), (-1, -1), 0.1, colors.purple),
+        ('GRID', (0, 0), (-1, -1), 0.1, CONSTANTS.light_grey),
+        ('BOX', (0, 0), (-1, -1), 0.1, CONSTANTS.color_table_box),
     ]))
 
     for t in list(text.upper()):
@@ -116,10 +112,10 @@ def generate_text(table, text, row_len, text_len):
 
             for i in alphabet_size['coords']: 
                 table.setStyle(TableStyle([
-                    ('TEXTCOLOR',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), colors.purple),
-                    ('FONTNAME',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), 'Helvetica-Bold'),
-                    ('BOX',(xM + i['sc'],y + i['sr']),(xM + i['ec'],y + i['er']),.1,colors.purple),
-                    # ('BACKGROUND',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']),colors.lightpink)
+                    ('TEXTCOLOR', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), CONSTANTS.color_name_text),
+                    ('FONTNAME', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), 'Roboto-Bold'),
+                    ('GRID', (xM + i['sc'],y + i['sr']),(xM + i['ec'],y + i['er']), 0, CONSTANTS.color_name_grid),
+                    ('BACKGROUND', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), CONSTANTS.color_name_bg)
             ]))    
             xM = xM + alphabet_size['meta']['cellWidth'] + paddingM
             cnt = cnt + 1
@@ -128,10 +124,10 @@ def generate_text(table, text, row_len, text_len):
         
             for i in alphabet_size['coords']: 
                 table.setStyle(TableStyle([
-                    ('TEXTCOLOR',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), colors.purple),
-                    ('FONTNAME',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), 'Helvetica-Bold'),
-                    ('BOX',(xL + i['sc'],y + i['sr']),(xL + i['ec'],y + i['er']),.1,colors.purple),
-                    # ('BACKGROUND',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']),colors.lightpink)
+                    ('TEXTCOLOR', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), CONSTANTS.color_name_text),
+                    ('FONTNAME', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), 'Roboto-Bold'),
+                    ('GRID', (xL + i['sc'],y + i['sr']),(xL + i['ec'],y + i['er']), 0, CONSTANTS.color_name_grid),
+                    ('BACKGROUND', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), CONSTANTS.color_name_bg)
             ]))    
             xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
             cnt = cnt + 1
