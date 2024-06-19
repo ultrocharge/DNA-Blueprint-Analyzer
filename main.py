@@ -15,7 +15,7 @@ pdfmetrics.registerFont(TTFont('Roboto', 'assets/fonts/Roboto-Regular.ttf'))
 pdfmetrics.registerFont(TTFont('Roboto-Bold', 'assets/fonts/Roboto-Bold.ttf'))
 
 def generate_pdf_file_path (page_index):
-    return f"{CONSTANTS.pdf_file_path} {page_index}.pdf"
+    return f"{CONSTANTS.pdf_file_path} {page_index} - {CONSTANTS.center_text}.pdf"
 
 def process_csv_and_export_pdf():
     # Read the CSV file
