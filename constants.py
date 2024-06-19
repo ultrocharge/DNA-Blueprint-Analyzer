@@ -1,4 +1,5 @@
 from reportlab.lib.units import inch
+from reportlab.lib import colors
 
 # Excel data column setting
 extract_col_name = 5 # column F
@@ -20,5 +21,11 @@ frame_margin_y = 0.4 * inch  # 0.5 inch margin
 page_content_width = 8 * inch
 page_content_height = 4 * inch
 
-# Dog name
-center_text = "world"
+# Immutable colors
+grey = colors.HexColor(0xBFBFBF)
+light_grey = colors.HexColor(0xD9D9D9)
+
+
+# Mutable color variables for name text, background and table box
+color_name_text = colors.HexColor(0x7030A0) # purple
+color_name_bg = color_name_grid = color_table_box = colors.HexColor(0xC0B9EF) # light purple
