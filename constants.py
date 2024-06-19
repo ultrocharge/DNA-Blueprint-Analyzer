@@ -20,6 +20,4 @@ page_content_width = 8 * inch
 page_content_height = 4 * inch
 
 # Dog name
-center_text = "Charlie"
-
-
+center_text = "Ruby"
