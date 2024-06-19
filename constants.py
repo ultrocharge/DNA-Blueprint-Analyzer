@@ -6,7 +6,7 @@ extract_col_start = 6 # column G
 extract_col_end = 237 # column IC
 
 # Source and Export data file directory
-csv_file_path = 'assets/Canine SNP Parentage Example.csv'
+csv_file_path = 'assets/genertic CSV'
 pdf_file_path = 'outputs/DNA BLUE PRINT'
 
 
@@ -22,3 +22,9 @@ page_content_height = 4 * inch
 
 # Dog name
 center_text = "world"
+
+
+
+
+
+
