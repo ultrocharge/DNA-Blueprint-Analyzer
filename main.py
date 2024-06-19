@@ -100,7 +100,8 @@ def generate_text(table, text, row_len, text_len):
     # Letter starting point
     xL = int((row_len - 5 * text_len - paddingL * (text_len - 1))/2)
     xM = int((row_len - 3 * text_len - paddingM * (text_len - 1))/2)
-    y = 2
+    yL = 2
+    yM = 3
     cnt = 1
 
     # Table style
@@ -121,10 +122,10 @@ def generate_text(table, text, row_len, text_len):
 
             for i in alphabet_size['coords']: 
                 table.setStyle(TableStyle([
-                    ('TEXTCOLOR', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), CONSTANTS.color_name_text),
-                    ('FONTNAME', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), 'Roboto-Bold'),
-                    ('GRID', (xM + i['sc'],y + i['sr']),(xM + i['ec'],y + i['er']), 0, CONSTANTS.color_name_grid),
-                    ('BACKGROUND', (xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), CONSTANTS.color_name_bg)
+                    ('TEXTCOLOR', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), CONSTANTS.color_name_text),
+                    ('FONTNAME', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), 'Roboto-Bold'),
+                    ('GRID', (xM + i['sc'],yM + i['sr']),(xM + i['ec'],yM + i['er']), 0, CONSTANTS.color_name_grid),
+                    ('BACKGROUND', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), CONSTANTS.color_name_bg)
             ]))    
             xM = xM + alphabet_size['meta']['cellWidth'] + paddingM
             cnt = cnt + 1
@@ -133,10 +134,10 @@ def generate_text(table, text, row_len, text_len):
         
             for i in alphabet_size['coords']: 
                 table.setStyle(TableStyle([
-                    ('TEXTCOLOR', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), CONSTANTS.color_name_text),
-                    ('FONTNAME', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), 'Roboto-Bold'),
-                    ('GRID', (xL + i['sc'],y + i['sr']),(xL + i['ec'],y + i['er']), 0, CONSTANTS.color_name_grid),
-                    ('BACKGROUND', (xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), CONSTANTS.color_name_bg)
+                    ('TEXTCOLOR', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), CONSTANTS.color_name_text),
+                    ('FONTNAME', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), 'Roboto-Bold'),
+                    ('GRID', (xL + i['sc'],yL + i['sr']),(xL + i['ec'],yL + i['er']), 0, CONSTANTS.color_name_grid),
+                    ('BACKGROUND', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), CONSTANTS.color_name_bg)
             ]))    
             xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
             cnt = cnt + 1
