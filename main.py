@@ -1,4 +1,6 @@
 import pandas as pd
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Frame, PageTemplate
 from reportlab.lib import colors
@@ -7,6 +9,10 @@ import constants as CONSTANTS
 
 f = open('alphabets.json')
 alphabets = json.load(f)
+
+# Register the font
+pdfmetrics.registerFont(TTFont('Roboto', 'assets/fonts/Roboto-Regular.ttf'))
+pdfmetrics.registerFont(TTFont('Roboto-Bold', 'assets/fonts/Roboto-Bold.ttf'))
 
 def generate_pdf_file_path (page_index):
     return f"{CONSTANTS.pdf_file_path} {page_index}.pdf"
@@ -88,14 +94,15 @@ def generate_text(table, text, row_len, text_len):
     # Table style
     table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',(0,0),(-1,-1),'Helvetica-Bold'),
+        ('FONTNAME',(0,0),(-1,-1),'Roboto-Bold'),
         ('TEXTCOLOR',(0,0),(-1,-1), colors.purple),
-        ('FONTNAME',(1,1),(-2,-2),'Helvetica'),
+        ('FONTNAME',(1,1),(-2,-2),'Roboto'),
         ('TEXTCOLOR',(1,1),(-2,-2), colors.lightgrey),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
         ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
     ]))
+
     for t in list(text.upper()):
         alphabet = alphabets[t]
         alphabet_size = {}
