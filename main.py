@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -19,15 +20,23 @@ def generate_pdf_file_path (page_index, dog_name):
 
 def process_csv_and_export_pdf():
     # Read the CSV file
-    data = pd.read_csv(CONSTANTS.csv_file_path)
 
+    all_files = os.listdir(CONSTANTS.csv_file_path)
+
+    dataframes = []
+    for file in all_files:
+        if file.endswith('.csv'):
+            df = pd.read_csv(os.path.join(CONSTANTS.csv_file_path, file))
+            dataframes.append(df)
+
+    combined_df = pd.concat(dataframes, ignore_index=True)
     # Extract the columns from G to IC
-    data_points = data.iloc[:, CONSTANTS.extract_col_start: CONSTANTS.extract_col_end]
+    data_points = combined_df.iloc[:, CONSTANTS.extract_col_start: CONSTANTS.extract_col_end]
 
     # Extract the dog name
     dog_name = []
 
-    selected_data = data.iloc[:, CONSTANTS.extract_col_name: CONSTANTS.extract_col_name+1]
+    selected_data = combined_df.iloc[:, CONSTANTS.extract_col_name: CONSTANTS.extract_col_name+1]
     
     for index, row in selected_data.iterrows():
         dog_name.extend(row.values)
