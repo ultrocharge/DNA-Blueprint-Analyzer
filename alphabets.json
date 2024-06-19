@@ -426,7 +426,7 @@
     "Q": {
         "large": {
             "meta": {
-                "cellWidth": 5,
+                "cellWidth": 6,
                 "cellHeight": 7
             },
             "coords":  [
@@ -441,7 +441,7 @@
         },
         "medium": {
             "meta": {
-                "cellWidth": 3,
+                "cellWidth": 4,
                 "cellHeight": 5
             },
             "coords":  [
