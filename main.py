@@ -14,31 +14,38 @@ alphabets = json.load(f)
 pdfmetrics.registerFont(TTFont('Roboto', 'assets/fonts/Roboto-Regular.ttf'))
 pdfmetrics.registerFont(TTFont('Roboto-Bold', 'assets/fonts/Roboto-Bold.ttf'))
 
-def generate_pdf_file_path (page_index):
-    return f"{CONSTANTS.pdf_file_path} {page_index} - {CONSTANTS.center_text}.pdf"
+def generate_pdf_file_path (page_index, dog_name):
+    return f"{CONSTANTS.pdf_file_path} {page_index} - {dog_name[page_index]}.pdf"
 
 def process_csv_and_export_pdf():
     # Read the CSV file
     data = pd.read_csv(CONSTANTS.csv_file_path)
 
-    # Extract the columns from F to IB
+    # Extract the columns from G to IC
     data_points = data.iloc[:, CONSTANTS.extract_col_start: CONSTANTS.extract_col_end]
 
+    # Extract the dog name
+    dog_name = []
+
+    selected_data = data.iloc[:, CONSTANTS.extract_col_name: CONSTANTS.extract_col_name+1]
+    
+    for index, row in selected_data.iterrows():
+        dog_name.extend(row.values)
     # Reorder data points and flag discrepancies
     for index, row in data_points.iterrows():
         reordered_row = []
         for value in row.values:
             if value != 'NR':
                 reordered_row.extend(value.split('/'))
-        generate_pdf(reordered_row, index)
+        generate_pdf(reordered_row, dog_name, index)
     
-def generate_pdf(blue_print_table_data, page_index):
+def generate_pdf(blue_print_table_data, dog_name, page_index):
 
     page_width = CONSTANTS.page_content_width + 2 * CONSTANTS.frame_margin_x
     page_height = CONSTANTS.page_content_height + 2 * CONSTANTS.frame_margin_y
     
     # Create PDF (8 * 4 inches)
-    doc = SimpleDocTemplate(generate_pdf_file_path(page_index), pagesize=(page_width, page_height))
+    doc = SimpleDocTemplate(generate_pdf_file_path(page_index, dog_name), pagesize=(page_width, page_height))
 
     # Define styles
     centered = ParagraphStyle(name="Centered", alignment=1, fontSize=8, leading=12, textColor=colors.blue, fontName="Helvetica-Bold")
@@ -52,7 +59,7 @@ def generate_pdf(blue_print_table_data, page_index):
         for col in range(46):
             if (CONSTANTS.center_start_row <= row < CONSTANTS.center_start_row + 2) and (CONSTANTS.center_start_col <= col < CONSTANTS.center_start_col + 3):
                 if row == CONSTANTS.center_start_row and col == CONSTANTS.center_start_col:
-                    row_data.append(Paragraph(CONSTANTS.center_text, centered))
+                    row_data.append(Paragraph(dog_name[page_index], centered))
                 else:
                     row_data.append('')
             else:
@@ -62,12 +69,12 @@ def generate_pdf(blue_print_table_data, page_index):
 
     # Length of row and text
     row_len = len(row_data)
-    text_len = len(CONSTANTS.center_text)
+    text_len = len(dog_name[page_index])
 
     # Create table
     table = Table(table_data, colWidths=[CONSTANTS.page_content_width / 46] * 46, rowHeights=[CONSTANTS.page_content_width / 46] * 10)
     
-    generate_text(table, CONSTANTS.center_text, row_len, text_len)
+    generate_text(table, dog_name[page_index], row_len, text_len)
 
     # Define frame with margins
     frame = Frame(x1=0, y1=0, width=page_width, height=page_height, leftPadding=CONSTANTS.frame_margin_x, rightPadding=CONSTANTS.frame_margin_x, topPadding=CONSTANTS.frame_margin_y)
@@ -79,7 +86,7 @@ def generate_pdf(blue_print_table_data, page_index):
     # Build PDF
     doc.build([table])
 
-    print(f"PDF created successfully: {generate_pdf_file_path(page_index)}")
+    print(f"PDF created successfully: {generate_pdf_file_path(page_index, dog_name)}")
 
 def generate_text(table, text, row_len, text_len):
     paddingL = int((row_len - text_len * 5)/(3 + text_len))
@@ -94,13 +101,11 @@ def generate_text(table, text, row_len, text_len):
     # Table style
     table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME',(0,0),(-1,-1),'Roboto-Bold'),
-        ('TEXTCOLOR',(0,0),(-1,-1), colors.purple),
-        ('FONTNAME',(1,1),(-2,-2),'Roboto'),
-        ('TEXTCOLOR',(1,1),(-2,-2), colors.lightgrey),
+        ('FONTNAME',(0, 0),(-1,-1),'Roboto'),
+        ('TEXTCOLOR',(0,0),(-1,-1), colors.lightgrey),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('BOX', (0, 0), (-1, -1), 0.5, colors.black),
+        ('BOX', (0, 0), (-1, -1), 0.1, colors.purple),
     ]))
 
     for t in list(text.upper()):
@@ -113,6 +118,8 @@ def generate_text(table, text, row_len, text_len):
                 table.setStyle(TableStyle([
                     ('TEXTCOLOR',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), colors.purple),
                     ('FONTNAME',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']), 'Helvetica-Bold'),
+                    ('BOX',(xM + i['sc'],y + i['sr']),(xM + i['ec'],y + i['er']),.1,colors.purple),
+                    # ('BACKGROUND',(xM + i['sc'], y + i['sr']),(xM + i['ec'], y + i['er']),colors.lightpink)
             ]))    
             xM = xM + alphabet_size['meta']['cellWidth'] + paddingM
             cnt = cnt + 1
@@ -123,6 +130,8 @@ def generate_text(table, text, row_len, text_len):
                 table.setStyle(TableStyle([
                     ('TEXTCOLOR',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), colors.purple),
                     ('FONTNAME',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']), 'Helvetica-Bold'),
+                    ('BOX',(xL + i['sc'],y + i['sr']),(xL + i['ec'],y + i['er']),.1,colors.purple),
+                    # ('BACKGROUND',(xL + i['sc'], y + i['sr']),(xL + i['ec'], y + i['er']),colors.lightpink)
             ]))    
             xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
             cnt = cnt + 1
