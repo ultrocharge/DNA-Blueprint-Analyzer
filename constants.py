@@ -1,8 +1,9 @@
 from reportlab.lib.units import inch
 
 # Excel data column setting
-extract_col_start = 5 # column F
-extract_col_end = 236 # column IB
+extract_col_name = 5 # column F
+extract_col_start = 6 # column G
+extract_col_end = 237 # column IC
 
 # Source and Export data file directory
 csv_file_path = 'assets/Canine SNP Parentage Example.csv'
@@ -20,4 +21,4 @@ page_content_width = 8 * inch
 page_content_height = 4 * inch
 
 # Dog name
-center_text = "Ruby"
+center_text = "world"
