@@ -21,11 +21,27 @@ frame_margin_y = 0.4 * inch  # 0.5 inch margin
 page_content_width = 8 * inch
 page_content_height = 4 * inch
 
-# Immutable colors
+# Immutable color
 grey = colors.HexColor(0xBFBFBF)
 light_grey = colors.HexColor(0xD9D9D9)
 
+# Color templates
+purple = colors.HexColor(0x7030A0)
+light_purple = colors.HexColor(0xC0B9EF)
+
+brown = colors.HexColor(0xC65911)
+light_brown = colors.HexColor(0xF8CBAD)
+
+sky = colors.HexColor(0x2F75B5)
+light_sky = colors.HexColor(0xBDD7EE)
+
+yellow = colors.HexColor(0xBF8F00)
+light_yellow = colors.HexColor(0xFFE699)
+
+green = colors.HexColor(0x548235)
+light_green = colors.HexColor(0xC6E0B4)
+
 
 # Mutable color variables for name text, background and table box
-color_name_text = colors.HexColor(0x7030A0) # purple
-color_name_bg = color_name_grid = color_table_box = colors.HexColor(0xC0B9EF) # light purple
+color_name_text = green
+color_name_bg = color_name_grid = color_table_box = light_green
