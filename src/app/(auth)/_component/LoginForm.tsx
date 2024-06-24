@@ -1,14 +1,28 @@
 "use client"
 
-import React, { useState } from 'react'
-import Router  from 'next/router';
+import React, { useState } from 'react';
+import loginUser from '@/app/api/auth/loginUser';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 export default function LoginForm() {
-
     const [formData, setFormData] = useState({
         email:"",
         password:"",
-    })
+    });
 
+    // validate login user 
+
+    const validationSchema = Yup.object().shape({
+        email: Yup.string().required("Email is required").email("Email is invalid"),
+        password: Yup.string().required("Password is required").length(6, "Passoword must be 6 characters at least"),
+    });
+        
+    const formOptions = { resolver: yupResolver(validationSchema) };
+    // get functions to build form with useForm() hook
+    const { register, handleSubmit, formState } = useForm(formOptions);
+
+    const { errors } = formState;
 
     const handleInput = (e:any) => {
         setFormData(prevState => ({
@@ -24,61 +38,60 @@ export default function LoginForm() {
         })
     }
 
-    const handleSubmit = (e:any) => {
-        e.preventDefault()
+    const onSubmit = () => {
         const userData = {
             email:formData.email,
             password:formData.password,
-        }        
+        };
 
-        console.log(userData);
-
-        Router.push('/dashboard')
+        loginUser(userData);
 
         removeState();        
     }
 
     return (
-        <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit}>
+        <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <p className="text-sm font-medium leading-6">Eamil Address</p>
                 <div className="mt-2">
-                <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    required
-                    onChange={handleInput}
-                />
+                    <input
+                        type="text"
+                        {...register("email")}
+                        name="email"
+                        value={formData.email}
+                        className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        onChange={handleInput}
+                    />
+                    <div className="text-red-500 mt-1 text-xs">{errors.email?.message}</div>
                 </div>
             </div>
             <div>
                 <p className="text-sm font-medium leading-6">Password</p>
                 <div className="mt-2">
-                <input
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                    required
-                    onChange={handleInput}
-                />
+                    <input
+                        type="password"
+                        {...register("password")}
+                        name="password"
+                        value={formData.password}
+                        className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                        onChange={handleInput}
+                    />
+                    <div className="text-red-500 mt-1 text-xs">{errors.password?.message}</div>
                 </div>
             </div>
             <div className="flex items-center justify-between">
                 <div className="flex gap-2">
-                <input type="checkbox" />
-                <p className="text-sm font-medium leading-6">Remeber me</p>
+                    <input type="checkbox" />
+                    <p className="text-sm font-medium leading-6">Remeber me</p>
                 </div>
-                <div>
-                <a
-                    href="/"
-                    className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
-                >
-                    Forgot Password?
-                </a>
-                </div>
+                {/* <div>
+                    <a
+                        href="/"
+                        className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
+                    >
+                        Forgot Password?
+                    </a>
+                </div> */}
             </div>
             <div>
                 <button
