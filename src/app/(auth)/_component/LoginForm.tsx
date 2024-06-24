@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react'
-
+import Router  from 'next/router';
 export default function LoginForm() {
 
     const [formData, setFormData] = useState({
@@ -16,7 +16,7 @@ export default function LoginForm() {
             [e.target.name]:e.target.value
         }))
     };
-
+    
     const removeState = () => {
         setFormData({
             email:"",
@@ -32,6 +32,8 @@ export default function LoginForm() {
         }        
 
         console.log(userData);
+
+        Router.push('/dashboard')
 
         removeState();        
     }
