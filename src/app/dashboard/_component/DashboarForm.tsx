@@ -9,13 +9,11 @@ export default function DashboardForm() {
         height:"4",
         paddingX:"0.3",
         paddingY:"0.4",
-        tableBorderColor:"#C0B9EF",
-        tableGridColor:"#D9D9D9",
-        tableTextColor:"#BFBFBF",
         textBackgroundColor:"#C0B9EF",
-        textGridColor:"#C0B9EF",
-        textTextColor:"#7030A0",
+        textColor:"#7030A0",
     })
+
+    const [checkedFlag, setCheckedFlag] = useState("purple")
 
     const handleInput = (e:any) => {
         setFormData(prevState => ({
@@ -30,65 +28,13 @@ export default function DashboardForm() {
             height:"4",
             paddingX:"0.3",
             paddingY:"0.4",
-            tableBorderColor:"#C0B9EF",
-            tableGridColor:"#D9D9D9",
-            tableTextColor:"#BFBFBF",
             textBackgroundColor:"#C0B9EF",
-            textGridColor:"#C0B9EF",
-            textTextColor:"#7030A0",
-        })
+            textColor:"#7030A0",
+        });
+
+        setCheckedFlag("purple")
     };
 
-    const Colors = [
-        {
-            colorName:"grey",
-            colorValue:"#BFBFBF"
-        },
-        {
-            colorName:"lightgrey",
-            colorValue:"#D9D9D9"
-        },
-        {
-            colorName:"pruple",
-            colorValue:"#7030A0"
-        },
-        {
-            colorName:"lightpuple",
-            colorValue:"#C0B9EF"
-        },
-        {
-            colorName:"brown",
-            colorValue:"#C65911"
-        },
-        {
-            colorName:"lightbrown",
-            colorValue:"#F8CBAD"
-        },
-        {
-            colorName:"sky",
-            colorValue:"#2F75B5"
-        },
-        {
-            colorName:"lightsky",
-            colorValue:"#BDD7EE"
-        },
-        {
-            colorName:"yellow",
-            colorValue:"#BF8F00"
-        },
-        {
-            colorName:"lightyellow",
-            colorValue:"#FFE699"
-        },
-        {
-            colorName:"green",
-            colorValue:"#548235"
-        },
-        {
-            colorName:"lightgreen",
-            colorValue:"#C6E0B4"
-        },
-    ]
 
     const handleSubmit = (e:any) => {
         e.preventDefault();
@@ -98,18 +44,53 @@ export default function DashboardForm() {
             height:formData.height,
             paddingX:formData.paddingX,
             paddingY:formData.paddingY,
-            tableBorderColor:formData.tableBorderColor,
-            tableGridColor:formData.tableGridColor,
-            tableTextColor:formData.tableTextColor,
             textBackgroundColor:formData.textBackgroundColor,
-            textGridColor:formData.textGridColor,
-            textTextColor:formData.textTextColor,
+            textColor:formData.textColor,
         };
 
         removeState();
 
         console.log(pdfInfo);
     };
+
+    const handleRadio = (e:any) => {
+        if(e.target.value === "purple") {
+            setFormData(prevState => ({
+                ...prevState,
+                textBackgroundColor:"#C0B9EF",
+                textColor:"#7030A0",
+            }))
+            setCheckedFlag("purple");
+        } else if(e.target.value === "brown") {
+            setFormData(prevState => ({
+                ...prevState,
+                textBackgroundColor:"#F8CBAD",
+                textColor:"#C65911",
+            }));
+            setCheckedFlag("brown");
+        } else if(e.target.value === "sky") {
+            setFormData(prevState => ({
+                ...prevState,
+                textBackgroundColor:"#BDD7EE",
+                textColor:"#2F75B5",
+            }));
+            setCheckedFlag("sky");
+        } else if(e.target.value === "yellow") {
+            setFormData(prevState => ({
+                ...prevState,
+                textBackgroundColor:"#FFE699",
+                textColor:"#BF8F00",
+            }));
+            setCheckedFlag("yellow");
+        } else if(e.target.value === "green") {
+            setFormData(prevState => ({
+                ...prevState,
+                textBackgroundColor:"#C6E0B4",
+                textColor:"#548235",
+            }));
+            setCheckedFlag("green");
+        }
+    }
 
     
     return (
@@ -163,7 +144,7 @@ export default function DashboardForm() {
                         </div>
                         <div className="flex justify-between gap-2 mt-2">
                             <div className="flex flex-1 items-center gap-2 justify-between">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">Padding(X):</p>
+                                <p className="block text-xs font-medium leading-6 text-gray-900">PaddingX(inch):</p>
                                 <input
                                     type="text"
                                     name="paddingX"
@@ -174,7 +155,7 @@ export default function DashboardForm() {
                                 />
                             </div>
                             <div className="flex flex-1 gap-2 items-center justify-between">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">Padding(Y):</p>
+                                <p className="block text-xs font-medium leading-6 text-gray-900">PaddingY(inch):</p>
                                 <input
                                     type="text"
                                     name="paddingY"
@@ -189,105 +170,45 @@ export default function DashboardForm() {
                     </div>
 
                     <div>
-                        <p className="block text-sm font-semibold leading-6 text-gray-900">Table Settings</p>
-                        <div className="flex sm:flex-row flex-col justify-between gap-2 mt-2">
-                            <div className="flex justify-between gap-2 items-center">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">BorderColor:</p>
-                                <div className="flex flex-row w-full">
-                                    <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="tableBorderColor" 
-                                            id="text_background_col" 
-                                            value={formData.tableBorderColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
-                                    </div>
-                                    <div className="flex-1 w-1/2">
-                                        <input
-                                            type="color"
-                                            name="tableBorderColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
-                                            required
-                                            value={formData.tableBorderColor}
-                                            onChange={handleInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex justify-between gap-2 items-center">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">GridColor:</p>
-                                <div className="flex flex-row w-full">
-                                    <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="tableGridColor" 
-                                            id="text_background_col" 
-                                            value={formData.tableGridColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
-                                    </div>
-                                    <div className="flex-1 w-1/2">
-                                        <input
-                                            type="color"
-                                            name="tableGridColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
-                                            required
-                                            value={formData.tableGridColor}
-                                            onChange={handleInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex justify-between gap-2 items-center">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">TextColor:</p>
-                                <div className="flex flex-row w-full">
-                                    <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="tableTextColor" 
-                                            id="text_background_col" 
-                                            value={formData.tableTextColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
-                                    </div>
-                                    <div className="flex-1 w-1/2">
-                                        <input
-                                            type="color"
-                                            name="tableTextColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
-                                            required
-                                            value={formData.tableTextColor}
-                                            onChange={handleInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div>
                         <p className="block text-sm font-semibold leading-6 text-gray-900">Text Settings</p>
-                        <div className="flex flex-col sm:flex-row justify-between gap-2 mt-2">
-                            <div className="flex justify-between gap-2 items-center">
+                        <fieldset className="rounded-md text-center border border-solid border-gray-400 p-1 text-xs mt-2">
+                            <legend>Default Colors</legend>
+                            <div className="flex flex-col sm:flex-row w-full">
+                                <div className="flex flex-1 gap-2 justify-center">
+                                    <input type="radio" name="purple" value="purple" onChange={handleRadio} checked={checkedFlag === "purple" ? true : false}/>
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Purple</p>
+                                </div>
+                                <div className="flex flex-1 gap-2 justify-center">
+                                    <input type="radio" name="brown" value="brown" onChange={handleRadio} checked={checkedFlag === "brown" ? true : false}/>
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Brown</p>
+                                </div>
+                                <div className="flex flex-1 gap-2 justify-center">
+                                    <input type="radio" name="sky" value="sky" onChange={handleRadio} checked={checkedFlag === "sky" ? true : false}/>
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Sky</p>
+                                </div>
+                                <div className="flex flex-1 gap-2 justify-center">
+                                    <input type="radio" name="yellow" value="yellow" onChange={handleRadio} checked={checkedFlag === "yellow" ? true : false}/>
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Yellow</p>
+                                </div>
+                                <div className="flex flex-1 gap-2 justify-center rounded-e-md">
+                                    <input type="radio" name="green" value="green" onChange={handleRadio} checked={checkedFlag === "green" ? true : false}/>
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Green</p>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div className="flex sm:flex-row flex-col justify-between gap-2 mt-5">
+                            <div className="flex flex-1 justify-between gap-2 items-center">
                                 <p className="block text-xs font-medium leading-6 text-gray-900">BackgroundColor:</p>
                                 <div className="flex flex-row w-full">
                                     <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="textBackgroundColor" 
-                                            id="text_background_col" 
-                                            value={formData.textBackgroundColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
+                                        <input
+                                            type="text"
+                                            name="textBackgroundColor"
+                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            required
+                                            value={formData.textBackgroundColor}
+                                            onChange={handleInput}
+                                        />
                                     </div>
                                     <div className="flex-1 w-1/2">
                                         <input
@@ -301,53 +222,26 @@ export default function DashboardForm() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex justify-between gap-2 items-center">
-                                <p className="block text-xs font-medium leading-6 text-gray-900">GridColor:</p>
-                                <div className="flex flex-row w-full">
-                                    <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="textGridColor" 
-                                            id="text_grid_col"
-                                            value={formData.textGridColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
-                                    </div>
-                                    <div className="flex-1 w-1/2">
-                                        <input
-                                            type="color"
-                                            name="textGridColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
-                                            required
-                                            value={formData.textGridColor}
-                                            onChange={handleInput}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex justify-between gap-2 items-center">
+                            <div className="flex flex-1 justify-between gap-2 items-center">
                                 <p className="block text-xs font-medium leading-6 text-gray-900">TextColor:</p>
                                 <div className="flex flex-row w-full">
                                     <div className="flex-1 w-1/2">
-                                        <select 
-                                            name="textTextColor" 
-                                            id="text_text_col" 
-                                            value={formData.textTextColor} 
-                                            onChange={handleInput} 
-                                            className="text-xs py-1 ring-1 rounded-md ring-gray-400 items-center w-full"
-                                        >
-                                            {Colors.map((item, index) => (<option key={index} value={item.colorValue}>{item.colorName}</option>))}
-                                        </select>
+                                        <input
+                                            type="text"
+                                            name="textColor"
+                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
+                                            required
+                                            value={formData.textColor}
+                                            onChange={handleInput}
+                                        />
                                     </div>
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="color"
-                                            name="textTextColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
+                                            name="textColor"
+                                            className="w-full rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
-                                            value={formData.textTextColor}
+                                            value={formData.textColor}
                                             onChange={handleInput}
                                         />
                                     </div>
