@@ -1,20 +1,37 @@
 "use client"
 
 import { useState } from "react"
+import CONSTANTS from '../constant.json';
+
+enum COLORS {
+    purple = "purple",
+    brown = "brown",
+    sky = "sky",
+    yellow = "yellow",
+    green = "green",
+};
+
+enum PAPER {
+    width = "8",
+    height = "4",
+    paddingX = "0.3",
+    paddingY = "0.4"
+}
 
 export default function DashboardForm() {
 
     const [formData, setFormData] = useState({
-        width:"8",
-        height:"4",
-        paddingX:"0.3",
-        paddingY:"0.4",
-        textBackgroundColor:"#C0B9EF",
-        textColor:"#7030A0",
+        width:PAPER.width,
+        height:PAPER.height,
+        paddingX:PAPER.paddingX,
+        paddingY:PAPER.paddingY,
+        textBackgroundColor:CONSTANTS.lightpurple,
+        textColor:CONSTANTS.purple,
     })
 
-    const [checkedFlag, setCheckedFlag] = useState("purple");
+    const [checkedFlag, setCheckedFlag] = useState(COLORS.purple);
     const [uploadedName, setUploadedName] = useState([]);
+    
     const handleInput = (e:any) => {
         setFormData(prevState => ({
             ...prevState,
@@ -24,15 +41,15 @@ export default function DashboardForm() {
 
     const removeState = () => {
         setFormData({
-            width:"8",
-            height:"4",
-            paddingX:"0.3",
-            paddingY:"0.4",
-            textBackgroundColor:"#C0B9EF",
-            textColor:"#7030A0",
+            width:PAPER.width,
+            height:PAPER.height,
+            paddingX:PAPER.paddingX,
+            paddingY:PAPER.paddingY,
+            textBackgroundColor:CONSTANTS.lightpurple,
+            textColor:CONSTANTS.purple,
         });
 
-        setCheckedFlag("purple")
+        setCheckedFlag(COLORS.purple)
     };
 
 
@@ -54,41 +71,41 @@ export default function DashboardForm() {
     };
 
     const handleRadio = (e:any) => {
-        if(e.target.value === "purple") {
+        if(e.target.value === COLORS.purple) {
             setFormData(prevState => ({
                 ...prevState,
-                textBackgroundColor:"#C0B9EF",
-                textColor:"#7030A0",
+                textBackgroundColor:CONSTANTS.lightpurple,
+                textColor:CONSTANTS.purple,
             }))
-            setCheckedFlag("purple");
-        } else if(e.target.value === "brown") {
+            setCheckedFlag(COLORS.purple);
+        } else if(e.target.value === COLORS.brown) {
             setFormData(prevState => ({
                 ...prevState,
-                textBackgroundColor:"#F8CBAD",
-                textColor:"#C65911",
+                textBackgroundColor:CONSTANTS.lightbrown,
+                textColor:CONSTANTS.brown,
             }));
-            setCheckedFlag("brown");
-        } else if(e.target.value === "sky") {
+            setCheckedFlag(COLORS.brown);
+        } else if(e.target.value === COLORS.sky) {
             setFormData(prevState => ({
                 ...prevState,
-                textBackgroundColor:"#BDD7EE",
-                textColor:"#2F75B5",
+                textBackgroundColor:CONSTANTS.lightsky,
+                textColor:CONSTANTS.sky,
             }));
-            setCheckedFlag("sky");
-        } else if(e.target.value === "yellow") {
+            setCheckedFlag(COLORS.sky);
+        } else if(e.target.value === COLORS.yellow) {
             setFormData(prevState => ({
                 ...prevState,
-                textBackgroundColor:"#FFE699",
-                textColor:"#BF8F00",
+                textBackgroundColor:CONSTANTS.lightyellow,
+                textColor:CONSTANTS.yellow,
             }));
-            setCheckedFlag("yellow");
-        } else if(e.target.value === "green") {
+            setCheckedFlag(COLORS.yellow);
+        } else if(e.target.value === COLORS.green) {
             setFormData(prevState => ({
                 ...prevState,
-                textBackgroundColor:"#C6E0B4",
-                textColor:"#548235",
+                textBackgroundColor:CONSTANTS.lightgreen,
+                textColor:CONSTANTS.green,
             }));
-            setCheckedFlag("green");
+            setCheckedFlag(COLORS.green);
         }
     }
 
@@ -181,26 +198,26 @@ export default function DashboardForm() {
                     <div>
                         <p className="block text-sm font-semibold leading-6 text-gray-900">Text Settings</p>
                         <fieldset className="rounded-md text-center border border-solid border-gray-400 p-1 text-xs mt-2">
-                            <legend>Default Colors</legend>
+                            <legend>Default COLORS</legend>
                             <div className="flex flex-col sm:flex-row w-full">
                                 <div className="flex flex-1 gap-2 sm:justify-center">
-                                    <input type="radio" name="purple" value="purple" onChange={handleRadio} checked={checkedFlag === "purple" ? true : false}/>
+                                    <input type="radio" name={COLORS.purple} value={COLORS.purple} onChange={handleRadio} checked={checkedFlag === COLORS.purple ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Purple</p>
                                 </div>
                                 <div className="flex flex-1 gap-2 sm:justify-center">
-                                    <input type="radio" name="brown" value="brown" onChange={handleRadio} checked={checkedFlag === "brown" ? true : false}/>
+                                    <input type="radio" name={COLORS.brown} value={COLORS.brown} onChange={handleRadio} checked={checkedFlag === COLORS.brown ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Brown</p>
                                 </div>
                                 <div className="flex flex-1 gap-2 sm:justify-center">
-                                    <input type="radio" name="sky" value="sky" onChange={handleRadio} checked={checkedFlag === "sky" ? true : false}/>
+                                    <input type="radio" name={COLORS.sky} value={COLORS.sky} onChange={handleRadio} checked={checkedFlag === COLORS.sky ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Sky</p>
                                 </div>
                                 <div className="flex flex-1 gap-2 sm:justify-center">
-                                    <input type="radio" name="yellow" value="yellow" onChange={handleRadio} checked={checkedFlag === "yellow" ? true : false}/>
+                                    <input type="radio" name={COLORS.yellow} value={COLORS.yellow} onChange={handleRadio} checked={checkedFlag === COLORS.yellow ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Yellow</p>
                                 </div>
                                 <div className="flex flex-1 gap-2 sm:justify-center rounded-e-md">
-                                    <input type="radio" name="green" value="green" onChange={handleRadio} checked={checkedFlag === "green" ? true : false}/>
+                                    <input type="radio" name={COLORS.green} value={COLORS.green} onChange={handleRadio} checked={checkedFlag === COLORS.green ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Green</p>
                                 </div>
                             </div>
