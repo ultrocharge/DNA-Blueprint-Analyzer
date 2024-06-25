@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const registerUser = (newUser:object) => {
+export const registerUser = async (newUser:any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
@@ -9,13 +9,13 @@ export const registerUser = (newUser:object) => {
     });
 
     const response = axiosInstance.post('/register', newUser)
-        .then(res => res.data)
-        .catch(err => console.log('Errors: ',err))
+        .then(res => res)
+        .catch(err => err.response)
 
     return response;
 };
 
-export const loginUser = (newUser:object) => {
+export const loginUser = (newUser:any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
@@ -24,8 +24,8 @@ export const loginUser = (newUser:object) => {
     });
 
     const response = axiosInstance.post('/login', newUser)
-        .then(res => res.data)
-        .catch(err => console.log(err))
+        .then(res => res)
+        .catch(err => err.response)
     
     return response;
 };
