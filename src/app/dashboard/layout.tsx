@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Suspense } from "react"
-import Loading from "../components/Loading"
+import Loading from "../../components/Loading"
 export default function DashboardLayout({children}:{children:React.ReactNode}) {
     return (
         <div className="absolute bg-white w-full h-full left-0 top-0 flex flex-col">
