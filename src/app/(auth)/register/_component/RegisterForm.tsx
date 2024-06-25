@@ -63,9 +63,10 @@ export default function RegisterForm() {
 
         const response = await registerUser(newUser);
 
-        if(response) router.push('/dashboard');   
-
-        message.success("Registration Successful!");
+        if(response) {
+            router.push('/dashboard');
+            message.success("Registration Successful!");
+        }
 
         removeState();
     };

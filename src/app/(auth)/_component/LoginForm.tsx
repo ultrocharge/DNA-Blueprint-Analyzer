@@ -55,9 +55,10 @@ export default function LoginForm() {
 
         const response = await loginUser(userData);
 
-        if(response) router.push('/dashboard');
-
-        message.success('Login Successful!');
+        if(response) {
+            router.push('/dashboard');
+            message.success('Login Successful!');
+        };
 
         removeState();        
     }
