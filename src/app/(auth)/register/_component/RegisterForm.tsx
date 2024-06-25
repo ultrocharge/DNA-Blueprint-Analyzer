@@ -54,18 +54,19 @@ export default function RegisterForm() {
     };
 
     const onSubmit = async () => {
-        const newUser:User = {
-            name:formData.name,
+        const newUser = {
+            username:formData.name,
             email:formData.email,
             password:formData.password,
-            confirmPassword:formData.confirmPassword,
         };
 
-        const response = await registerUser(newUser);
+        const response = await registerUser(newUser);        
 
-        if(response) {
-            router.push('/dashboard');
-            message.success("Registration Successful!");
+        if(response.status === 201) {
+            router.push('/');
+            message.success(`${response.data.message}`);
+        } else if(response.status === 409) {
+            message.warning(`${response.data.error}`)
         }
 
         removeState();
