@@ -2,8 +2,8 @@
 
 import { useState } from "react"
 import CONSTANTS from '../constant.json';
-import geneticNamePlate from "@/app/api/genetic/geneticNamePlate";
-
+import geneticNamePlate from "@/app/api/genetic-api";
+import { message } from "antd";
 enum COLORS {
     purple = "purple",
     brown = "brown",
@@ -13,15 +13,24 @@ enum COLORS {
 };
 
 enum PAPER {
-    width = "8",
-    height = "4",
-    paddingX = "0.3",
-    paddingY = "0.4"
+    width = 8,
+    height = 4,
+    paddingX = 0.3,
+    paddingY = 0.4,
 }
 
 export default function DashboardForm() {
 
-    const [formData, setFormData] = useState({
+    interface PDF {
+        width:number,
+        height:number,
+        paddingX:number,
+        paddingY:number,
+        textBackgroundColor:string,
+        textColor:string,
+    }
+
+    const [formData, setFormData] = useState<PDF>({
         width:PAPER.width,
         height:PAPER.height,
         paddingX:PAPER.paddingX,
@@ -54,10 +63,10 @@ export default function DashboardForm() {
     };
 
 
-    const handleSubmit = (e:any) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
 
-        const pdfInfo = {
+        const pdfInfo:PDF = {
             width:formData.width,
             height:formData.height,
             paddingX:formData.paddingX,
@@ -66,7 +75,9 @@ export default function DashboardForm() {
             textColor:formData.textColor,
         };
 
-        geneticNamePlate(pdfInfo);
+        const response = await geneticNamePlate(pdfInfo);
+        
+        if(response) message.success('Download Successful!');
 
         removeState();
     };

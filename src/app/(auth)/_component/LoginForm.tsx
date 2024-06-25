@@ -1,12 +1,21 @@
 "use client"
 
 import React, { useState } from 'react';
-import loginUser from '@/app/api/auth/loginUser';
+import { useRouter } from 'next/navigation';
+import {loginUser} from '@/app/api/auth-api';
+import { message } from 'antd';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 export default function LoginForm() {
-    const [formData, setFormData] = useState({
+    const router = useRouter();
+
+    interface User {
+        email:string,
+        password:string,
+    };
+
+    const [formData, setFormData] = useState<User>({
         email:"",
         password:"",
     });
@@ -15,7 +24,7 @@ export default function LoginForm() {
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().required("Email is required").email("Email is invalid"),
-        password: Yup.string().required("Password is required").length(6, "Passoword must be 6 characters at least"),
+        password: Yup.string().required("Password is required").min(6, "Passoword must be 6 characters at least"),
     });
         
     const formOptions = { resolver: yupResolver(validationSchema) };
@@ -38,13 +47,17 @@ export default function LoginForm() {
         })
     }
 
-    const onSubmit = () => {
-        const userData = {
+    const onSubmit = async () => {
+        const userData:User = {
             email:formData.email,
             password:formData.password,
         };
 
-        loginUser(userData);
+        const response = await loginUser(userData);
+
+        if(response) router.push('/dashboard');
+
+        message.success('Login Successful!');
 
         removeState();        
     }

@@ -2,12 +2,20 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
-import registerUser from '@/app/api/auth/registerUser';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { message } from 'antd';
+import { registerUser } from '@/app/api/auth-api';
 export default function RegisterForm() {
-    const [formData, setFormData] = useState({
+    const router = useRouter();
+    interface User {
+        name:string,
+        email:string,
+        password:string,
+        confirmPassword:string,
+    }
+    const [formData, setFormData] = useState<User>({
         name:"",
         email:"",
         password:"",
@@ -19,7 +27,7 @@ export default function RegisterForm() {
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Full Name is required"),
         email: Yup.string().required("Email is required").email("Email is invalid"),
-        password: Yup.string().required("Password is required").length(6, "Passoword must be 6 characters at least"),
+        password: Yup.string().required("Password is required").min(6, "Passoword must be 6 characters at least"),
         confirmPassword: Yup.string().required("Confirm Password is required").oneOf([Yup.ref("password"), ''], "Password must be matched"),
       });
       
@@ -45,15 +53,19 @@ export default function RegisterForm() {
         })
     };
 
-    const onSubmit = () => {
-        const newUser = {
+    const onSubmit = async () => {
+        const newUser:User = {
             name:formData.name,
             email:formData.email,
             password:formData.password,
             confirmPassword:formData.confirmPassword,
         };
 
-        registerUser(newUser);
+        const response = await registerUser(newUser);
+
+        if(response) router.push('/dashboard');   
+
+        message.success("Registration Successful!");
 
         removeState();
     };
