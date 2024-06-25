@@ -23,4 +23,4 @@ export default function DashboardLayout({children}:{children:React.ReactNode}) {
             </div>
         </div>
     )
-}5
+}
