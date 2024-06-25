@@ -18,10 +18,10 @@ export default function Login() {
                 <p className="text-sm font-medium leading-6">No account?</p>
                 <div>
                     <Link
-                    href="/register"
-                    className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
+                        href="/register"
+                        className="text-sm font-medium leading-6 text-indigo-600 hover:text-indigo-500"
                     >
-                    Create One
+                        Create One
                     </Link>
                 </div>
             </div>
