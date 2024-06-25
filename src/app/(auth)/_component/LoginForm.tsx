@@ -53,12 +53,21 @@ export default function LoginForm() {
             password:formData.password,
         };
 
-        const response = await loginUser(userData);
+        const response = await loginUser(userData);        
 
-        if(response) {
+        if(response.status === 200) { 
+            
+            const {access_token} = response.data;
+            
+            document.cookie = `token=${access_token}; path=/`
+            
             router.push('/dashboard');
-            message.success('Login Successful!');
+            message.success('User login Successful!');
+        } else if(response.status === 401) {
+            message.warning(`${response.data.message}`)
         };
+
+
 
         removeState();        
     }
