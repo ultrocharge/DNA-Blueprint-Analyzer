@@ -12,29 +12,29 @@ enum COLORS {
     green = "green",
 };
 
-enum PAPER {
-    width = 8,
-    height = 4,
-    paddingX = 0.3,
-    paddingY = 0.4,
-}
+// enum PAPER {
+//     width = 8,
+//     height = 4,
+//     paddingX = 0.3,
+//     paddingY = 0.4,
+// }
 
 export default function DashboardForm() {
 
     interface PDF {
-        width:number,
-        height:number,
-        paddingX:number,
-        paddingY:number,
+        // width:number,
+        // height:number,
+        // paddingX:number,
+        // paddingY:number,
         textBackgroundColor:string,
         textColor:string,
     }
 
     const [formData, setFormData] = useState<PDF>({
-        width:PAPER.width,
-        height:PAPER.height,
-        paddingX:PAPER.paddingX,
-        paddingY:PAPER.paddingY,
+        // width:PAPER.width,
+        // height:PAPER.height,
+        // paddingX:PAPER.paddingX,
+        // paddingY:PAPER.paddingY,
         textBackgroundColor:CONSTANTS.lightpurple,
         textColor:CONSTANTS.purple,
     })
@@ -51,10 +51,10 @@ export default function DashboardForm() {
 
     const removeState = () => {
         setFormData({
-            width:PAPER.width,
-            height:PAPER.height,
-            paddingX:PAPER.paddingX,
-            paddingY:PAPER.paddingY,
+            // width:PAPER.width,
+            // height:PAPER.height,
+            // paddingX:PAPER.paddingX,
+            // paddingY:PAPER.paddingY,
             textBackgroundColor:CONSTANTS.lightpurple,
             textColor:CONSTANTS.purple,
         });
@@ -67,10 +67,10 @@ export default function DashboardForm() {
         e.preventDefault();
 
         const pdfInfo:PDF = {
-            width:formData.width,
-            height:formData.height,
-            paddingX:formData.paddingX,
-            paddingY:formData.paddingY,
+            // width:formData.width,
+            // height:formData.height,
+            // paddingX:formData.paddingX,
+            // paddingY:formData.paddingY,
             textBackgroundColor:formData.textBackgroundColor,
             textColor:formData.textColor,
         };
@@ -134,7 +134,7 @@ export default function DashboardForm() {
         <form onSubmit={handleSubmit}>
             <div className="w-full">
                 <p className="block text-lg underline font-semibold leading-6 text-gray-900">Upload CSV file</p>
-                <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-6">
+                <div className="mt-5 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-6">
                     <div className="text-center">
                         <div className="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
                             <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
@@ -152,10 +152,10 @@ export default function DashboardForm() {
                     </div>
                 </div>
             </div>
-            <div className="w-full mt-2">
+            <div className="w-full mt-10">
                 <p className="block text-lg font-semibold leading-6 text-gray-900 underline">PDF Details</p>
                 <div className="space-y-4 mt-5">
-                    <div>
+                    {/* <div>
                         <p className="block text-sm font-semibold leading-6 text-gray-900">Paper Settings</p>
                         <div className="flex justify-between gap-4 mt-2">
                             <div className="flex flex-1 items-center gap-2 justify-between">
@@ -205,7 +205,7 @@ export default function DashboardForm() {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div>
                         <p className="block text-sm font-semibold leading-6 text-gray-900">Text Settings</p>
@@ -235,14 +235,14 @@ export default function DashboardForm() {
                             </div>
                         </fieldset>
                         <div className="flex sm:flex-row flex-col justify-between gap-2 mt-5">
-                            <div className="flex flex-1 justify-between gap-2 items-center">
+                            <div>
                                 <p className="block text-xs font-medium leading-6 text-gray-900">BackgroundColor:</p>
-                                <div className="flex flex-row gap-2 w-full">
+                                <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="text"
                                             name="textBackgroundColor"
-                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            className="w-full rounded-md border-0 py-1 px-2 text-sm text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
                                             value={formData.textBackgroundColor}
                                             onChange={handleInput}
@@ -260,9 +260,9 @@ export default function DashboardForm() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-1 justify-between gap-2 items-center">
+                            <div>
                                 <p className="block text-xs font-medium leading-6 text-gray-900">TextColor:</p>
-                                <div className="flex flex-row gap-2 w-full">
+                                <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="text"
