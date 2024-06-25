@@ -1,4 +1,6 @@
 import Link from "next/link"
+import { Suspense } from "react"
+import Loading from "../components/Loading"
 export default function DashboardLayout({children}:{children:React.ReactNode}) {
     return (
         <div className="absolute bg-white w-full h-full left-0 top-0 flex flex-col">
@@ -15,7 +17,9 @@ export default function DashboardLayout({children}:{children:React.ReactNode}) {
                 </div>
             </header>
             <div className="max-w-xl mx-auto flex flex-1 items-center px-3">
-                {children}
+                <Suspense fallback={<Loading />}>
+                    {children}
+                </Suspense>
             </div>
         </div>
     )
