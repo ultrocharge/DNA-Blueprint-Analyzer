@@ -28,6 +28,7 @@ export default function LoginForm() {
     });
         
     const formOptions = { resolver: yupResolver(validationSchema) };
+
     // get functions to build form with useForm() hook
     const { register, handleSubmit, formState } = useForm(formOptions);
 
@@ -56,20 +57,18 @@ export default function LoginForm() {
         const response = await loginUser(userData);        
 
         if(response.status === 200) { 
-            
             const {access_token} = response.data;
-            
-            document.cookie = `token=${access_token}; path=/`
-            
+
+            localStorage.setItem('token', access_token);
+
             router.push('/dashboard');
+
             message.success('User login Successful!');
         } else if(response.status === 401) {
             message.warning(`${response.data.message}`)
         };
 
-
-
-        removeState();        
+        removeState();
     }
 
     return (

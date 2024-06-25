@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import CONSTANTS from '../constant.json';
+import CONSTANTS from '@/assets/constant.json';
 import geneticNamePlate from "@/app/api/genetic-api";
 import { message } from "antd";
+import UploadCSV from "@/components/UploadCSV";
 enum COLORS {
     purple = "purple",
     brown = "brown",
@@ -40,7 +41,6 @@ export default function DashboardForm() {
     })
 
     const [checkedRadio, setCheckedRadio] = useState(COLORS.purple);
-    const [uploadedName, setUploadedName] = useState([]);
     
     const handleInput = (e:any) => {
         setFormData(prevState => ({
@@ -121,40 +121,13 @@ export default function DashboardForm() {
         }
     }
 
-    const handleUpload = (e:any) => {
-        const names:any = [];
-        for(const file of e.target.files){
-            names.push(file.name);
-        };
-        
-        setUploadedName(names);
-        
-    };
+
     return (
         <form onSubmit={handleSubmit}>
-            <div className="w-full">
-                <p className="block text-lg underline font-semibold leading-6 text-gray-900">Upload CSV file</p>
-                <div className="mt-5 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-6">
-                    <div className="text-center">
-                        <div className="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
-                            <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                            <span>Upload a file</span>
-                            <input id="file-upload" name="file-upload" type="file" className="sr-only" required onChange={handleUpload} multiple/>
-                            </label>
-                            <p className="pl-1">or drag and drop</p>
-                        </div>
-                        <p className="text-xs leading-5 text-gray-600">CSV up to 10MB</p>
-                        {uploadedName.map((item, index) => {
-                            return (
-                                <p key={index} className="text-xs">{index + 1}. {item}</p>
-                            )
-                        })}
-                    </div>
-                </div>
-            </div>
+            <UploadCSV />
             <div className="w-full mt-10">
                 <p className="block text-lg font-semibold leading-6 text-gray-900 underline">PDF Details</p>
-                <div className="space-y-4 mt-5">
+                <div className="mt-5">
                     {/* <div>
                         <p className="block text-sm font-semibold leading-6 text-gray-900">Paper Settings</p>
                         <div className="flex justify-between gap-4 mt-2">
@@ -240,9 +213,9 @@ export default function DashboardForm() {
                                 <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
-                                            type="text"
+                                            type="color"
                                             name="textBackgroundColor"
-                                            className="w-full rounded-md border-0 py-1 px-2 text-sm text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
                                             required
                                             value={formData.textBackgroundColor}
                                             onChange={handleInput}
@@ -250,9 +223,9 @@ export default function DashboardForm() {
                                     </div>
                                     <div className="flex-1 w-1/2">
                                         <input
-                                            type="color"
+                                            type="text"
                                             name="textBackgroundColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
+                                            className="w-full rounded-md border-0 py-1 px-2 text-sm text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
                                             value={formData.textBackgroundColor}
                                             onChange={handleInput}
@@ -265,9 +238,9 @@ export default function DashboardForm() {
                                 <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
-                                            type="text"
+                                            type="color"
                                             name="textColor"
-                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
+                                            className="w-full rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
                                             value={formData.textColor}
                                             onChange={handleInput}
@@ -275,9 +248,9 @@ export default function DashboardForm() {
                                     </div>
                                     <div className="flex-1 w-1/2">
                                         <input
-                                            type="color"
+                                            type="text"
                                             name="textColor"
-                                            className="w-full rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
                                             required
                                             value={formData.textColor}
                                             onChange={handleInput}
