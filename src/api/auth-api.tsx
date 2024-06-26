@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// api for register User
 export const registerUser = async (newUser:any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
@@ -15,6 +16,7 @@ export const registerUser = async (newUser:any) => {
     return response;
 };
 
+// api for login User
 export const loginUser = (newUser:any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,

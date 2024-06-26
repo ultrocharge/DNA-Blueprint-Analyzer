@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// api for geneticNamePlate
 export default function geneticNamePlate(pdfInfo:object) {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
@@ -8,7 +9,7 @@ export default function geneticNamePlate(pdfInfo:object) {
         },
     });
 
-    const response = axiosInstance.post('/genetic', pdfInfo)
+    const response = axiosInstance.post('/analyze', pdfInfo)
         .then(res => res.data)
         .catch(err => console.log(err))
 
