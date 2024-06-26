@@ -7,3 +7,4 @@ mysqlclient
 python-dotenv
 pandas
 reportlab
+pymysql
