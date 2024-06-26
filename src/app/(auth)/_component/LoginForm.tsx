@@ -8,18 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { message } from 'antd';
 import { loginUser } from '@/api/auth';
 
-interface User {
-    email:string,
-    password:string,
-};
-
 export default function LoginForm() {
     const router = useRouter();
-
-    const [formData, setFormData] = useState<User>({
-        email:"",
-        password:"",
-    });
 
     // validate login User 
     const validationSchema = Yup.object().shape({
@@ -34,26 +24,7 @@ export default function LoginForm() {
 
     const { errors } = formState;
 
-    const handleInput = (e:any) => {
-        setFormData(prevState => ({
-            ...prevState,
-            [e.target.name]:e.target.value
-        }))
-    };
-    
-    const removeState = () => {
-        setFormData({
-            email:"",
-            password:"",
-        })
-    };
-
-    const onSubmit = async () => {
-        const userData:User = {
-            email:formData.email,
-            password:formData.password,
-        };
-
+    const onSubmit = async (userData:any) => {
         const response = await loginUser(userData);        
 
         if(response.status === 200) { 
@@ -68,22 +39,18 @@ export default function LoginForm() {
             message.warning(`${response.data.message}`)
         };
 
-        removeState();
     };
 
     return (
         <form className="space-y-6" action="#" method="POST" onSubmit={handleSubmit(onSubmit)}>
             <div>
                 <p className="text-sm font-medium leading-6">Eamil Address</p>
-
                 <div className="mt-2">
                     <input
                         type="text"
                         {...register("email")}
                         name="email"
-                        value={formData.email}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.email?.message}</div>
@@ -98,9 +65,7 @@ export default function LoginForm() {
                         type="password"
                         {...register("password")}
                         name="password"
-                        value={formData.password}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.password?.message}</div>

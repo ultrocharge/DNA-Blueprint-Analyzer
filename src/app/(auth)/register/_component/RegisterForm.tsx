@@ -8,22 +8,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { message } from 'antd';
 import { registerUser } from '@/api/auth';
 
-interface User {
-    name:string,
-    email:string,
-    password:string,
-    confirmPassword:string,
-};
-
 export default function RegisterForm() {
     const router = useRouter();
-
-    const [formData, setFormData] = useState<User>({
-        name:"",
-        email:"",
-        password:"",
-        confirmPassword:"",
-    });
 
     // validate register User 
     const validationSchema = Yup.object().shape({
@@ -40,27 +26,11 @@ export default function RegisterForm() {
 
     const { errors } = formState;
 
-    const handleInput = (e:any) => {
-        setFormData((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
-    const removeState = () => {
-        setFormData({
-            name:"",
-            email:"",
-            password:"",
-            confirmPassword:"",
-        })
-    };
-
-    const onSubmit = async () => {
+    const onSubmit = async (data:any) => {
         const newUser = {
-            username:formData.name,
-            email:formData.email,
-            password:formData.password,
+            username:data.name,
+            email:data.email,
+            password:data.password,
         };
 
         const response = await registerUser(newUser);        
@@ -71,8 +41,6 @@ export default function RegisterForm() {
         } else if(response.status === 409) {
             message.warning(`${response.data.error}`)
         };
-
-        removeState();
     };
 
     return (
@@ -85,9 +53,7 @@ export default function RegisterForm() {
                         type="text"
                         {...register("name")}
                         name="name"
-                        value={formData.name}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.name?.message}</div>
@@ -102,9 +68,7 @@ export default function RegisterForm() {
                         type="text"
                         {...register("email")}
                         name="email"
-                        value={formData.email}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.email?.message}</div>
@@ -119,9 +83,7 @@ export default function RegisterForm() {
                         type="password"
                         {...register("password")}
                         name="password"
-                        value={formData.password}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.password?.message}</div>
@@ -136,9 +98,7 @@ export default function RegisterForm() {
                         type="password"
                         {...register("confirmPassword")}
                         name="confirmPassword"
-                        value={formData.confirmPassword}
                         className="w-full rounded-md border-0 p-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                        onChange={handleInput}
                     />
 
                     <div className="text-red-500 mt-1 text-xs">{errors.confirmPassword?.message}</div>
