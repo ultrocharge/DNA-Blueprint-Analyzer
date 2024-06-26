@@ -4,11 +4,10 @@ import { useState } from "react"
 import { message } from "antd";
 import { GrCircleQuestion } from "react-icons/gr";
 import CONSTANTS from '@/assets/colors.json';
-import analyzeAndDownload from "@/api/genetic";
+import { processAndDownload } from "@/api/genetic";
 
 import { BsFiletypeCsv } from "react-icons/bs";
 import UPLOAD_SETTING from "@/assets/upload.json";
-import { stringify } from "querystring";
 
 enum COLORS {
     purple = "purple",
@@ -49,6 +48,13 @@ export default function DashboardForm() {
         setCheckedRadio(COLORS.purple)
     };
 
+    const getCurrentDateTime = () => {
+        const now = new Date();
+        const date = now.toLocaleDateString(); // Format: MM/DD/YYYY
+        const time = now.toLocaleTimeString(); // Format: HH:MM:SS AM/PM
+        return `${date} ${time}`;
+      };
+
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
@@ -66,12 +72,14 @@ export default function DashboardForm() {
 
             uploadFormData.append('pdfInfo', JSON.stringify(pdfInfo));
             
-            const data = await analyzeAndDownload(uploadFormData);
-            if(data) {
-                const url = window.URL.createObjectURL(new Blob([data]));
+            const response = await processAndDownload(uploadFormData);
+            
+            if(response) {
+                const downloadFileName = `DNA BLUE PRINT PDF List ${getCurrentDateTime()}.zip`
+                const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'generated_reports.zip'); // or any other extension
+                link.setAttribute('download', downloadFileName); // or any other extension
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -85,10 +93,12 @@ export default function DashboardForm() {
 
     const handleUpload = (e:any) => {
         const fileNames: string[] = [];
+        const files: any = [];
 
         for(const file of e.target.files){
             const fileName = file.name;
             fileNames.push(file.name);
+            files.push(file)
 
             let fileExt = fileName.substring(fileName.lastIndexOf('.'));
             
@@ -104,6 +114,7 @@ export default function DashboardForm() {
         };
 
         setUploadFileNames(fileNames);
+        setUploadFiles(files);
     };
 
     const handleRadio = (e:any) => {
