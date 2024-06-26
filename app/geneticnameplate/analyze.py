@@ -1,39 +1,33 @@
-import pandas as pd, os, json, zipfile
+import os
+import json
+import zipfile
+import pandas as pd
 
 from io import BytesIO
-
-from flask import send_file
-
+from flask import Flask, send_file
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Frame, PageTemplate
-from reportlab.lib.styles import getSampleStyleSheet
 
 from app.config import Constant
 
+from datetime import datetime
+
+app = Flask(__name__)
+
+# Setup paths
 current_dir = os.path.dirname(os.path.abspath(__file__))
 alphabets_file_path = os.path.join(current_dir, '..', 'assets', 'alphabets.json')
-uploads_file_path = os.path.join(current_dir, '..', Constant.UPLOAD_FOLDER)
-outputs_file_path = os.path.join(current_dir, '..', Constant.RESULT_FOLDER)
-
-if not os.path.exists(uploads_file_path):
-    os.makedirs(uploads_file_path)
-
-if not os.path.exists(outputs_file_path):
-    os.makedirs(outputs_file_path)
-
 roboto_file_path = os.path.join(current_dir, '..', Constant.FONT_FOLDER, 'Roboto-Regular.ttf')
 roboto_bold_file_path = os.path.join(current_dir, '..', Constant.FONT_FOLDER, 'Roboto-Bold.ttf')
 
+# Load alphabets JSON
 with open(alphabets_file_path, 'r') as f:
     alphabets = json.load(f)
 
-# Register the font
+# Register fonts
 pdfmetrics.registerFont(TTFont('Roboto', roboto_file_path))
 pdfmetrics.registerFont(TTFont('Roboto-Bold', roboto_bold_file_path))
-
-def generate_pdf_file_path (page_index, dog_name):
-    return f"{outputs_file_path}/DNA BLUE PRINT {page_index} - {dog_name[page_index]}.pdf"
 
 def generate_text(table, text, row_len, text_len):
     paddingL = int((row_len - text_len * 5)/(3 + text_len))
@@ -84,16 +78,12 @@ def generate_text(table, text, row_len, text_len):
             xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
             cnt = cnt + 1
 
-def generate_pdf(blue_print_table_data, dog_name, page_index, pdf_buffer):
-
+def generate_pdf(blue_print_table_data, dog_name):
     page_width = Constant.PAGE_CONTENT_WIDTH + 2 * Constant.FRAME_MARGIN_X
     page_height = Constant.PAGE_CONTENT_HEIGHT + 2 * Constant.FRAME_MARGIN_Y
-    
-    # Create PDF (8 * 4 inches)
-    doc = SimpleDocTemplate(outputs_file_path, pagesize=(page_width, page_height))
-    # doc = SimpleDocTemplate(pdf_buffer, pagesize=(page_width, page_height))
 
-    # Create table data
+    pdf_buffer = BytesIO()
+    doc = SimpleDocTemplate(pdf_buffer, pagesize=(page_width, page_height))
     table_data = []
     data_index = 0
 
@@ -102,7 +92,7 @@ def generate_pdf(blue_print_table_data, dog_name, page_index, pdf_buffer):
         for col in range(46):
             if (Constant.CENTER_START_ROW <= row < Constant.CENTER_START_ROW + 2) and (Constant.CENTER_START_COL <= col < Constant.CENTER_START_COL + 3):
                 if row == Constant.CENTER_START_ROW and col == Constant.CENTER_START_COL:
-                    row_data.append(Paragraph(dog_name[page_index]))
+                    row_data.append(Paragraph(dog_name))
                 else:
                     row_data.append('')
             else:
@@ -110,72 +100,46 @@ def generate_pdf(blue_print_table_data, dog_name, page_index, pdf_buffer):
                 data_index += 1
         table_data.append(row_data)
 
-    # Length of row and text
     row_len = len(row_data)
-    text_len = len(dog_name[page_index])
+    text_len = len(dog_name)
 
-    # Create table
     table = Table(table_data, colWidths=[Constant.PAGE_CONTENT_WIDTH / 46] * 46, rowHeights=[Constant.PAGE_CONTENT_WIDTH / 46] * 10)
-    
-    generate_text(table, dog_name[page_index], row_len, text_len)
+    generate_text(table, dog_name, row_len, text_len)
 
-    # Define frame with margins
     frame = Frame(x1=0, y1=0, width=page_width, height=page_height, leftPadding=Constant.FRAME_MARGIN_X, rightPadding=Constant.FRAME_MARGIN_X, topPadding=Constant.FRAME_MARGIN_Y)
-
-    # Create a PageTemplate and add the frame to it
     page_template = PageTemplate(id='PageTemplate', frames=[frame])
     doc.addPageTemplates([page_template])
-
-    # Build PDF
-    # doc.build([table])
     
-    return doc
+    doc.build([table])
 
+    pdf_buffer.seek(0)
+    return pdf_buffer
 
-def process_csv_and_export_pdf(files, pdfInfo):
-
+def process_and_download(files, pdfInfo):
     Constant.update_name_colors(color_name_text=pdfInfo.get('textColor'), color_name_bg=pdfInfo.get('textBackgroundColor'))
 
-    # Read the CSV file
-    dataframes = []
-    for file in files:
-        df = pd.read_csv(file)
-        dataframes.append(df)
-
-    combined_df = pd.concat(dataframes, ignore_index=True)
-    # Extract the columns from G to IC
-    data_points = combined_df.iloc[:, Constant.EXTRACT_COL_START: Constant.EXTRACT_COL_END]
-
-    # Extract the dog name
-    dog_name = []
-
-    selected_data = combined_df.iloc[:, Constant.EXTRACT_COL_NAME: Constant.EXTRACT_COL_NAME + 1]
+    dataframes = [pd.read_csv(file.stream) for file in files]
+    if not dataframes:
+        raise ValueError("No files were uploaded.")
     
-    for index, row in selected_data.iterrows():
-        dog_name.extend(row.values)
+    combined_df = pd.concat(dataframes, ignore_index=True)
+    if combined_df.empty:
+        raise ValueError("Uploaded files contain no data.")
 
-    # Create a zip file in memory
+    data_points = combined_df.iloc[:, Constant.EXTRACT_COL_START: Constant.EXTRACT_COL_END]
+    dog_names = combined_df.iloc[:, Constant.EXTRACT_COL_NAME].tolist()
+
     zip_buffer = BytesIO()
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-        # Reorder data points and flag discrepancies
         for index, row in data_points.iterrows():
             reordered_row = []
             for value in row.values:
                 if value != 'NR':
                     reordered_row.extend(value.split('/'))
 
-            # Example PDF generation (replace with your actual PDF generation logic)
-            pdf_buffer = BytesIO()
-            doc = generate_pdf(reordered_row, dog_name, index, pdf_buffer)
-            styles = getSampleStyleSheet()
-            flowables = [
-                Paragraph(f"Title: Test", styles['Title']),
-            ]
-            doc.build(flowables)
-
-            pdf_buffer.seek(0)
-            zip_file.writestr(f"generated_document_{index + 1}.pdf", pdf_buffer.read())
+            dog_name = dog_names[index]
+            pdf_buffer = generate_pdf(reordered_row, dog_name)
+            zip_file.writestr(f"DNA BLUE PRINT PDF_{index + 1}_{dog_name}.pdf", pdf_buffer.read())
 
     zip_buffer.seek(0)
-
-    return send_file(zip_buffer, as_attachment=True, download_name='generated_reports.zip', mimetype='application/zip')
+    return send_file(zip_buffer, as_attachment=True, download_name="DNA BLUE PRINT PDF LIST.zip", mimetype='application/zip')

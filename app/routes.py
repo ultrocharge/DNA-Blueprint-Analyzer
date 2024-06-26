@@ -12,25 +12,11 @@ from app.geneticnameplate import analyze
 main = Blueprint('main', __name__)
 
 # Control Files
-@main.route('/upload_csv', methods=['POST'])
-def upload_csv():
+@main.route('/process_and_download', methods=['POST'])
+def process_and_download():
     pdfInfo = json.loads(request.form.get('pdfInfo'))
     uploadFiles = request.files.getlist('uploadFiles')
-    analyze.process_csv_and_export_pdf(files=uploadFiles, pdfInfo=pdfInfo)
-    
-    return jsonify(message='Successfully downloaded a zip file of DNA BLUE PRINT PDFs!'), 200
-    
-    # zip_buffer = analyze.process_csv_and_export_pdf(files=uploadFiles, pdfInfo=pdfInfo)
-    # return send_file(zip_buffer, as_attachment=True, download_name='generated_reports.zip', mimetype='application/zip')
-    return send_file(zip_buffer, as_attachment=True, download_name='generated_reports.zip', mimetype='application/zip')
-
-@main.route('/download/<filename>', methods=['GET'])
-def download_file(filename):
-    file_path = os.path.join(Constant.RESULT_FOLDER, filename)
-    if os.path.exists(file_path):
-        return send_file(file_path, as_attachment=True)
-    else:
-        return jsonify(error='File not found'), 404
+    return analyze.process_and_download(files=uploadFiles, pdfInfo=pdfInfo)
 
 # Authentication
 @main.route("/register", methods=['POST'])
