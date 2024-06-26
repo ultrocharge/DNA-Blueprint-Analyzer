@@ -27,7 +27,7 @@ export default function Header() {
 
     return (
         <header className="bg-indigo-700 shadow-xl">
-            <div className="max-w-7xl mx-auto flex text-white justify-between items-center py-5 px-3 gap-2">
+            <div className="max-w-7xl mx-auto flex text-white justify-between items-center py-5 px-5 gap-2">
                 <div>
                     <h1 className="text-lg sm:text-2xl font-bold">GeneticNamePlate</h1>
                 </div>

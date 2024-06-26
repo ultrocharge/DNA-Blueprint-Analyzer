@@ -14,7 +14,7 @@ export default function DashboardLayout({children}:{children:React.ReactNode}) {
         <div className="absolute bg-white min-w-full min-h-full left-0 top-0 flex flex-col">
             <Header />
             
-            <div className="w-full max-w-lg mx-auto flex flex-1 justify-center items-center p-3">
+            <div className="w-full max-w-lg mx-auto flex flex-1 justify-center py-6 sm:py-20 px-5">
                 <Suspense fallback={<Loading />}>
                     <div className="w-full">
                         {children}
