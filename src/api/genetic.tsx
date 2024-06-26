@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default function analyzeAndDownload(formData: any) {
+export const processAndDownload = (formData: any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
@@ -9,8 +9,8 @@ export default function analyzeAndDownload(formData: any) {
         responseType: 'blob'
     });
 
-    const response = axiosInstance.post('/upload_csv', formData)
-        .then(res => res.data)
+    const response = axiosInstance.post('/process_and_download', formData)
+        .then(res => res)
         .catch(err => console.log(err))
 
     return response;

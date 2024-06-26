@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // api for register User
-export const registerUser = async (newUser:any) => {
+export const registerUser = async (newUser: any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
@@ -17,7 +17,7 @@ export const registerUser = async (newUser:any) => {
 };
 
 // api for login User
-export const loginUser = (newUser:any) => {
+export const loginUser = (newUser: any) => {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
