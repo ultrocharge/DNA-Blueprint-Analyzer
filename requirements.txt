@@ -1,2 +1,9 @@
-pandas==2.2.2
-reportlab==4.2.0
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-JWT-Extended
+flask_cors
+mysqlclient
+python-dotenv
+pandas
+reportlab
