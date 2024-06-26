@@ -1,17 +1,35 @@
 "use client"
 
-import uploadCSVFile from "@/app/api/upload-api";
 import { useState } from "react"
-
+import uploadCSVFile from "@/app/api/upload-api";
+import { message } from "antd";
+import UPLOAD from "../assets/upload.json"
 export default function UploadCSV() {
+
     const [uploadedName, setUploadedName] = useState([]);
-    const handleUpload = (e:any) => {
-        const names:any = [];
-        for(const file of e.target.files){
-            names.push(file.name);
+    const handleUpload = async (e:any) => {
+        var fileExt = e.target.value;
+        fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+
+        if (fileExt !== UPLOAD.fileExtension) {
+            message.warning(`Invalid file selected, valid files is of ${UPLOAD.fileExtension} types.`)
+        } else {
+            const names:any = [];
+            const files:any = [];
+            
+            for(const file of e.target.files) {
+                if(file.size > UPLOAD.maxFileSize) {
+                    message.warning(`The size of ${file.name} is too large, the size must be less then 10MB`)
+                } else {
+                    names.push(file.name)
+                    files.push(file);
+                }
+            };
+            setUploadedName(names);
+
+            await uploadCSVFile(files);
         };
         
-        setUploadedName(names);       
     };
     return (
         <div className="w-full">
@@ -21,7 +39,7 @@ export default function UploadCSV() {
                     <div className="mt-4 flex text-sm leading-6 text-gray-600 justify-center">
                         <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
                         <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" className="sr-only" required onChange={handleUpload} multiple />
+                        <input id="file-upload" name="file-upload" type="file" className="sr-only" required onChange={handleUpload} multiple accept=".csv"/>
                         </label>
                         <p className="pl-1">or drag and drop</p>
                     </div>
