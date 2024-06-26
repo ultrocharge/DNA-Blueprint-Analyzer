@@ -1,3 +1,4 @@
+
 ## Create a virtual environment named "venv"
 ```python -m venv venv```
 
@@ -7,8 +8,11 @@
 #### On macOS and Linux:
 ```source venv/bin/activate```
 
-## Install dependencies listed in requirements.txt
+#### Install dependencies listed in requirements.txt
 ```pip install -r requirements.txt```
+
+#### Run
+```python -m flask run```
 
 ## About Project
 
