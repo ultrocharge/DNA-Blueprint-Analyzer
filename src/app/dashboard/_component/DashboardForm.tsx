@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import CONSTANTS from '@/assets/constant.json';
-import geneticNamePlate from "@/app/api/genetic-api";
 import { message } from "antd";
+import { GrCircleQuestion } from "react-icons/gr";
+import CONSTANTS from '@/assets/colors.json';
+import geneticNamePlate from "@/api/genetic-api";
 import UploadCSV from "@/components/UploadCSV";
+
 enum COLORS {
     purple = "purple",
     brown = "brown",
@@ -13,32 +15,16 @@ enum COLORS {
     green = "green",
 };
 
-// enum PAPER {
-//     width = 8,
-//     height = 4,
-//     paddingX = 0.3,
-//     paddingY = 0.4,
-// }
+interface PDF {
+    textBackgroundColor:string,
+    textColor:string,
+};
 
 export default function DashboardForm() {
-
-    interface PDF {
-        // width:number,
-        // height:number,
-        // paddingX:number,
-        // paddingY:number,
-        textBackgroundColor:string,
-        textColor:string,
-    }
-
     const [formData, setFormData] = useState<PDF>({
-        // width:PAPER.width,
-        // height:PAPER.height,
-        // paddingX:PAPER.paddingX,
-        // paddingY:PAPER.paddingY,
         textBackgroundColor:CONSTANTS.lightpurple,
         textColor:CONSTANTS.purple,
-    })
+    });
 
     const [checkedRadio, setCheckedRadio] = useState(COLORS.purple);
     
@@ -51,10 +37,6 @@ export default function DashboardForm() {
 
     const removeState = () => {
         setFormData({
-            // width:PAPER.width,
-            // height:PAPER.height,
-            // paddingX:PAPER.paddingX,
-            // paddingY:PAPER.paddingY,
             textBackgroundColor:CONSTANTS.lightpurple,
             textColor:CONSTANTS.purple,
         });
@@ -67,10 +49,6 @@ export default function DashboardForm() {
         e.preventDefault();
 
         const pdfInfo:PDF = {
-            // width:formData.width,
-            // height:formData.height,
-            // paddingX:formData.paddingX,
-            // paddingY:formData.paddingY,
             textBackgroundColor:formData.textBackgroundColor,
             textColor:formData.textColor,
         };
@@ -88,7 +66,8 @@ export default function DashboardForm() {
                 ...prevState,
                 textBackgroundColor:CONSTANTS.lightpurple,
                 textColor:CONSTANTS.purple,
-            }))
+            }));
+
             setCheckedRadio(COLORS.purple);
         } else if(e.target.value === COLORS.brown) {
             setFormData(prevState => ({
@@ -96,6 +75,7 @@ export default function DashboardForm() {
                 textBackgroundColor:CONSTANTS.lightbrown,
                 textColor:CONSTANTS.brown,
             }));
+
             setCheckedRadio(COLORS.brown);
         } else if(e.target.value === COLORS.sky) {
             setFormData(prevState => ({
@@ -103,6 +83,7 @@ export default function DashboardForm() {
                 textBackgroundColor:CONSTANTS.lightsky,
                 textColor:CONSTANTS.sky,
             }));
+
             setCheckedRadio(COLORS.sky);
         } else if(e.target.value === COLORS.yellow) {
             setFormData(prevState => ({
@@ -110,6 +91,7 @@ export default function DashboardForm() {
                 textBackgroundColor:CONSTANTS.lightyellow,
                 textColor:CONSTANTS.yellow,
             }));
+
             setCheckedRadio(COLORS.yellow);
         } else if(e.target.value === COLORS.green) {
             setFormData(prevState => ({
@@ -117,110 +99,82 @@ export default function DashboardForm() {
                 textBackgroundColor:CONSTANTS.lightgreen,
                 textColor:CONSTANTS.green,
             }));
-            setCheckedRadio(COLORS.green);
-        }
-    }
 
+            setCheckedRadio(COLORS.green);
+        };
+    };
 
     return (
         <form onSubmit={handleSubmit}>
             <UploadCSV />
-            <div className="w-full mt-10">
-                <p className="block text-lg font-semibold leading-6 text-gray-900 underline">PDF Details</p>
-                <div className="mt-5">
-                    {/* <div>
-                        <p className="block text-sm font-semibold leading-6 text-gray-900">Paper Settings</p>
-                        <div className="flex justify-between gap-4 mt-2">
-                            <div className="flex flex-1 items-center gap-2 justify-between">
-                                <p className="block text-xs font-medium leading-6 text-gray-900 flex-1">Width(inch):</p>
-                                <input
-                                    type="text"
-                                    name="width"
-                                    className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 flex-1"
-                                    required
-                                    value={formData.width}
-                                    onChange={handleInput}
-                                />
-                            </div>
-                            <div className="flex flex-1 items-center gap-2 justify-between">
-                                <p className="flex-1 block text-xs font-medium leading-6 text-gray-900">Height(inch):</p>
-                                <input
-                                    type="text"
-                                    name="height"
-                                    className="flex-1 w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                    required
-                                    value={formData.height}
-                                    onChange={handleInput}
-                                />
-                            </div>
-                        </div>
-                        <div className="flex justify-between gap-4 mt-2">
-                            <div className="flex flex-1 items-center gap-2 justify-between">
-                                <p className="flex-1 block text-xs font-medium leading-6 text-gray-900">PaddingX(inch):</p>
-                                <input
-                                    type="text"
-                                    name="paddingX"
-                                    className="flex-1 w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                    required
-                                    value={formData.paddingX}
-                                    onChange={handleInput}
-                                />
-                            </div>
-                            <div className="flex flex-1 gap-2 items-center justify-between">
-                                <p className="flex-1 block text-xs font-medium leading-6 text-gray-900">PaddingY(inch):</p>
-                                <input
-                                    type="text"
-                                    name="paddingY"
-                                    className="flex-1 w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
-                                    required
-                                    value={formData.paddingY}
-                                    onChange={handleInput}
-                                />
-                            </div>
-                        </div>
-                    </div> */}
+            
+            <div className="w-full mt-2 xs:mt-10">
+                <p className="block text-balance xs:text-lg font-semibold leading-6 text-gray-900">Settings for DNA BLUE PRINT PDF</p>
 
+                <div className="mt-2 xs:mt-5">
                     <div>
-                        <p className="block text-sm font-semibold leading-6 text-gray-900">Text Settings</p>
-                        <fieldset className="rounded-md text-center border border-solid border-gray-400 p-1 text-xs mt-2">
-                            <legend>Default Colors</legend>
-                            <div className="flex flex-col sm:flex-row w-full">
-                                <div className="flex flex-1 gap-2 sm:justify-center">
+                        <fieldset className="rounded-md text-center border border-solid border-gray-400 px-5 xs:px-1 py-1 text-xs mt-2">
+                            <legend>Color Templates</legend>
+
+                            <div className="flex flex-col xs:flex-row w-full">
+                                <div className="flex flex-1 gap-2 xs:justify-center">
                                     <input type="radio" name={COLORS.purple} value={COLORS.purple} onChange={handleRadio} checked={checkedRadio === COLORS.purple ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Purple</p>
                                 </div>
-                                <div className="flex flex-1 gap-2 sm:justify-center">
+                                
+                                <div className="flex flex-1 gap-2 xs:justify-center">
                                     <input type="radio" name={COLORS.brown} value={COLORS.brown} onChange={handleRadio} checked={checkedRadio === COLORS.brown ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Brown</p>
                                 </div>
-                                <div className="flex flex-1 gap-2 sm:justify-center">
+
+                                <div className="flex flex-1 gap-2 xs:justify-center">
                                     <input type="radio" name={COLORS.sky} value={COLORS.sky} onChange={handleRadio} checked={checkedRadio === COLORS.sky ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Sky</p>
                                 </div>
-                                <div className="flex flex-1 gap-2 sm:justify-center">
+
+                                <div className="flex flex-1 gap-2 xs:justify-center">
                                     <input type="radio" name={COLORS.yellow} value={COLORS.yellow} onChange={handleRadio} checked={checkedRadio === COLORS.yellow ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Yellow</p>
                                 </div>
-                                <div className="flex flex-1 gap-2 sm:justify-center rounded-e-md">
+                                
+                                <div className="flex flex-1 gap-2 xs:justify-center rounded-e-md">
                                     <input type="radio" name={COLORS.green} value={COLORS.green} onChange={handleRadio} checked={checkedRadio === COLORS.green ? true : false}/>
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Green</p>
                                 </div>
                             </div>
                         </fieldset>
-                        <div className="flex sm:flex-row flex-col justify-between gap-2 mt-5">
+
+                        <div className="flex xs:flex-row flex-col w-full justify-between gap-2 mt-2 xs:mt-5">
                             <div>
-                                <p className="block text-xs font-medium leading-6 text-gray-900">BackgroundColor:</p>
+                                <div className="flex items-center xs:justify-between gap-2">
+                                    <p className="block text-xs font-medium leading-6 text-gray-900">Background Color:</p>
+
+                                    <div className="group relative cursor-pointer xs:max-w-fit min-w-fit">
+                                        <div className="absolute hidden group-hover:block whitespace-nowrap -top-1 w-full">
+                                            <div className="flex flex-col justify-start items-center -translate-y-full">
+                                                <div className="bg-gray-700 shadow-md text-white rounded-md py-1 px-3 text-xs">
+                                                    Border,Grid,Box color for Table
+                                                </div>
+                                                <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-gray-700 -mt-1"></div>
+                                            </div>
+                                        </div>
+
+                                        <GrCircleQuestion color="gray" data-tooltip-target="tooltip-light" data-tooltip-style="light"/>
+                                    </div>
+                                </div>
+
                                 <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="color"
                                             name="textBackgroundColor"
-                                            className=" rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
+                                            className=" rounded-md border-0 p-1 outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
                                             required
                                             value={formData.textBackgroundColor}
                                             onChange={handleInput}
                                         />
                                     </div>
+
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="text"
@@ -233,8 +187,10 @@ export default function DashboardForm() {
                                     </div>
                                 </div>
                             </div>
+
                             <div>
-                                <p className="block text-xs font-medium leading-6 text-gray-900">TextColor:</p>
+                                <p className="block text-xs font-medium leading-6 text-gray-900">Text Color:</p>
+
                                 <div className="flex flex-row gap-2 w-full mt-2">
                                     <div className="flex-1 w-1/2">
                                         <input
@@ -246,6 +202,7 @@ export default function DashboardForm() {
                                             onChange={handleInput}
                                         />
                                     </div>
+
                                     <div className="flex-1 w-1/2">
                                         <input
                                             type="text"
@@ -262,8 +219,9 @@ export default function DashboardForm() {
                     </div>
                 </div>
             </div>
-            <div className="mt-10">
-                <button type="submit" className="w-full rounded-lg bg-indigo-700 text-white text-sm font-semibold p-2">Analyze & Download PDF</button>
+            
+            <div className="mt-5 sm:mt-10">
+                <button type="submit" className="w-full rounded-lg bg-indigo-700 text-white text-sm font-semibold p-2">Analyze & Download</button>
             </div>
         </form>
     )
