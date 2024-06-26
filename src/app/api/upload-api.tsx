@@ -1,16 +1,23 @@
 import axios from "axios";
-
-export default function uploadCSVFile() {
+import FormData from "form-data";
+export default function uploadCSVFile(files:any) {
     const axiosInstance = axios.create({
         baseURL: process.env.BACKEND_URL_PORT,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'multipart/form-data'
         },
     });
+    
+    for(let i = 0; i < files.length; i ++) {
 
-    const response = axiosInstance.post('/upload_csv')
-        .then(res => res.data)
-        .catch(err => console.log(err))
+        let file = files[i]
+        
+        const formData = new FormData();
 
-    return response;
+        formData.append('file', file, file.name);        
+
+        axiosInstance.post('/upload_csv', formData)
+            .then(res => res)
+            .catch(err => err.response)
+    }
 };
