@@ -1,4 +1,4 @@
 {
-    "maxFileSize":10000000,
-    "fileExtension":".csv"
+    "maxFileSize": 10000000,
+    "fileExtension": ".csv"
 }
