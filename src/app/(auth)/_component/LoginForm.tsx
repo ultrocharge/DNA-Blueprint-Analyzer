@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { message } from 'antd';
-import { loginUser } from '@/api/auth-api';
+import { loginUser } from '@/api/auth';
 
 interface User {
     email:string,

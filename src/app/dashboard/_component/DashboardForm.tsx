@@ -4,8 +4,11 @@ import { useState } from "react"
 import { message } from "antd";
 import { GrCircleQuestion } from "react-icons/gr";
 import CONSTANTS from '@/assets/colors.json';
-import geneticNamePlate from "@/api/genetic-api";
-import UploadCSV from "@/components/UploadCSV";
+import analyzeAndDownload from "@/api/genetic";
+
+import { BsFiletypeCsv } from "react-icons/bs";
+import UPLOAD_SETTING from "@/assets/upload.json";
+import { stringify } from "querystring";
 
 enum COLORS {
     purple = "purple",
@@ -27,6 +30,8 @@ export default function DashboardForm() {
     });
 
     const [checkedRadio, setCheckedRadio] = useState(COLORS.purple);
+    const [uploadFiles, setUploadFiles] = useState([]);
+    const [uploadFileNames, setUploadFileNames] = useState<string[]>([]);
     
     const handleInput = (e:any) => {
         setFormData(prevState => ({
@@ -49,15 +54,56 @@ export default function DashboardForm() {
         e.preventDefault();
 
         const pdfInfo:PDF = {
-            textBackgroundColor:formData.textBackgroundColor,
-            textColor:formData.textColor,
+            textBackgroundColor: formData.textBackgroundColor,
+            textColor: formData.textColor,
         };
-
-        const response = await geneticNamePlate(pdfInfo);
         
-        if(response) message.success('Download Successful!');
+        const uploadFormData = new FormData();
+        if (uploadFiles) {
+            Array.from(uploadFiles).forEach((file, index) => {
+                uploadFormData.append('uploadFiles', file);
+            });
+
+            uploadFormData.append('pdfInfo', JSON.stringify(pdfInfo));
+            
+            const data = await analyzeAndDownload(uploadFormData);
+            if(data) {
+                const url = window.URL.createObjectURL(new Blob([data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'generated_reports.zip'); // or any other extension
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                message.success('Download Successful!')
+            };
+        }
 
         removeState();
+    };
+
+    const handleUpload = (e:any) => {
+        const fileNames: string[] = [];
+
+        for(const file of e.target.files){
+            const fileName = file.name;
+            fileNames.push(file.name);
+
+            let fileExt = fileName.substring(fileName.lastIndexOf('.'));
+            
+            if (fileExt !== UPLOAD_SETTING.fileExtension) {
+                message.warning(`Invalid file selected, only CSV files are allowed.`);
+                return;
+            }
+                
+            if(file.size > UPLOAD_SETTING.maxFileSize) {
+                message.warning(`The size of ${file.name} can not exceed 10MB.`)
+                return;
+            }
+        };
+
+        setUploadFileNames(fileNames);
     };
 
     const handleRadio = (e:any) => {
@@ -106,7 +152,32 @@ export default function DashboardForm() {
 
     return (
         <form onSubmit={handleSubmit}>
-            <UploadCSV />
+            <div className="w-full h-full">
+            <p className="block text-base xs:text-lg font-semibold leading-6 text-gray-900">Upload CSV files</p>
+
+            <div className="mt-2 xs:mt-5 flex flex-col gap-2 items-center justify-center rounded-lg border border-dashed border-gray-900/25 py-3">
+                <BsFiletypeCsv size={50} color="gray" className="hidden xs:block"/>
+
+                <div className="text-center ">
+                    <div className="flex text-sm items-center leading-6 text-gray-600 justify-center">
+                        <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 outline-none">
+                            <BsFiletypeCsv size={50} color="gray" className="block xs:hidden"/>
+                            <span className="hidden xs:block">Browse</span>
+                            <input id="file-upload" name="file-upload" type="file" className="sr-only hidden xs:block" required onChange={handleUpload} multiple accept=".csv"/>
+                        </label>
+                        <p className="pl-1 text-xs xs:text-sm hidden xs:block">or Drag and drop</p>
+                    </div>
+
+                    <p className="text-xs leading-5 text-gray-600 hidden xs:block">up to 10MB each</p>
+
+                    {uploadFileNames.map((fileName, index) => {
+                        return (
+                            <p key={index} className="text-xs mt-1">{index + 1}. {fileName}</p>
+                        )
+                    })}
+                </div>
+            </div>
+        </div>
             
             <div className="w-full mt-2 xs:mt-10">
                 <p className="block text-balance xs:text-lg font-semibold leading-6 text-gray-900">Settings for DNA BLUE PRINT PDF</p>
@@ -153,7 +224,7 @@ export default function DashboardForm() {
                                         <div className="absolute hidden group-hover:block whitespace-nowrap -top-1 w-full">
                                             <div className="flex flex-col justify-start items-center -translate-y-full">
                                                 <div className="bg-gray-700 shadow-md text-white rounded-md py-1 px-3 text-xs">
-                                                    Border,Grid,Box color for Table
+                                                    This color is used for Name Background, Name Grid, Table Box
                                                 </div>
                                                 <div className="w-0 h-0 border-l-8 border-r-8 border-t-8 border-l-transparent border-r-transparent border-t-gray-700 -mt-1"></div>
                                             </div>
