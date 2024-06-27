@@ -42,8 +42,9 @@ export default function Header() {
                     }
                 </div>
 
-                <div className="sm:hidden block" onClick={logOut}>
+                <div className="group sm:hidden block" onClick={logOut}>
                     <HiOutlineLogout size={20} />
+                    <div className="hidden group-hover:block">adsf</div>
                 </div>
             </div>
         </header>
