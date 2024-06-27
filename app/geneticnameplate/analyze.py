@@ -44,9 +44,9 @@ def generate_text(table, text, row_len, text_len):
     table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('FONTNAME',(0, 0),(-1,-1),'Roboto'),
-        ('TEXTCOLOR',(0,0),(-1,-1), Constant.GREY),
+        ('TEXTCOLOR',(0,0),(-1,-1), Constant.COLOR_TABLE_TEXT),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('GRID', (0, 0), (-1, -1), 0.1, Constant.LIGHT_GREY),
+        ('GRID', (0, 0), (-1, -1), 0.1, Constant.COLOR_TABLE_GRID),
         ('BOX', (0, 0), (-1, -1), 0.1, Constant.COLOR_TABLE_BOX),
     ]))
 
@@ -60,7 +60,7 @@ def generate_text(table, text, row_len, text_len):
                 table.setStyle(TableStyle([
                     ('TEXTCOLOR', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), Constant.COLOR_NAME_TEXT),
                     ('FONTNAME', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), 'Roboto-Bold'),
-                    ('GRID', (xM + i['sc'],yM + i['sr']),(xM + i['ec'],yM + i['er']), 0, Constant.COLOR_MAME_GRID),
+                    ('GRID', (xM + i['sc'],yM + i['sr']),(xM + i['ec'],yM + i['er']), 1, Constant.COLOR_NAME_GRID),
                     ('BACKGROUND', (xM + i['sc'], yM + i['sr']),(xM + i['ec'], yM + i['er']), Constant.COLOR_NAME_BG)
             ]))    
             xM = xM + alphabet_size['meta']['cellWidth'] + paddingM
@@ -72,7 +72,7 @@ def generate_text(table, text, row_len, text_len):
                 table.setStyle(TableStyle([
                     ('TEXTCOLOR', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), Constant.COLOR_NAME_TEXT),
                     ('FONTNAME', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), 'Roboto-Bold'),
-                    ('GRID', (xL + i['sc'],yL + i['sr']),(xL + i['ec'],yL + i['er']), 0, Constant.COLOR_MAME_GRID),
+                    ('GRID', (xL + i['sc'],yL + i['sr']),(xL + i['ec'],yL + i['er']), 1, Constant.COLOR_NAME_GRID),
                     ('BACKGROUND', (xL + i['sc'], yL + i['sr']),(xL + i['ec'], yL + i['er']), Constant.COLOR_NAME_BG)
             ]))    
             xL = xL + alphabet_size['meta']['cellWidth'] + paddingL
@@ -115,8 +115,9 @@ def generate_pdf(blue_print_table_data, dog_name):
     pdf_buffer.seek(0)
     return pdf_buffer
 
-def process_and_download(files, pdfInfo):
-    Constant.update_name_colors(color_name_text=pdfInfo.get('textColor'), color_name_bg=pdfInfo.get('textBackgroundColor'))
+def process_and_download(files, pdfSettings):
+    Constant.update_name_colors(color_name_text=pdfSettings.get('textColor'), color_name_bg=pdfSettings.get('textBackgroundColor'))
+    Constant.update_table_colors(color_table_grid=pdfSettings.get('tableGridColor'), color_table_text=pdfSettings.get('tableTextColor'))
 
     dataframes = [pd.read_csv(file.stream) for file in files]
     if not dataframes:
