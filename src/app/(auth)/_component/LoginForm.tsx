@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { message } from 'antd';
 import { loginUser } from '@/api/auth';
+import Button from '@/components/Button';
 
 export default function LoginForm() {
     const router = useRouter();
@@ -71,14 +72,11 @@ export default function LoginForm() {
                     <div className="text-red-500 mt-1 text-xs">{errors.password?.message}</div>
                 </div>
             </div>
-
             <div>
-                <button
+                <Button 
                     type="submit"
-                    className="w-full rounded-md bg-indigo-600 py-2 text-sm font-semibold leading-4 text-white outline-none hover:bg-indigo-500"
-                >
-                    Sign In
-                </button>
+                    content="Sign In"
+                />
             </div>
         </form>
     )
