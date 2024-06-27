@@ -32,8 +32,8 @@ class Constant:
     PAGE_CONTENT_HEIGHT = int(os.environ.get('PAGE_CONTENT_HEIGHT')) * inch
 
     # Immutable color
-    GREY = colors.HexColor(os.environ.get('GREY_RGB'))
-    LIGHT_GREY = colors.HexColor(os.environ.get('LIGHT_GREY_RGB'))
+    COLOR_TABLE_TEXT = colors.HexColor(os.environ.get('GREY_RGB'))
+    COLOR_TABLE_GRID = colors.HexColor(os.environ.get('LIGHT_GREY_RGB'))
 
     # Mutable color variables for name text, background and table box
     COLOR_NAME_TEXT = colors.HexColor(0x7030A0) # PURPLE
@@ -42,4 +42,9 @@ class Constant:
     @classmethod
     def update_name_colors(cls, color_name_text, color_name_bg):
         cls.COLOR_NAME_TEXT = colors.HexColor(color_name_text)
-        cls.COLOR_NAME_BG = cls.COLOR_MAME_GRID = cls.COLOR_TABLE_BOX= colors.HexColor(color_name_bg)
+        cls.COLOR_NAME_BG = cls.COLOR_NAME_GRID = cls.COLOR_TABLE_BOX= colors.HexColor(color_name_bg)
+
+    @classmethod
+    def update_table_colors(cls, color_table_grid, color_table_text):
+        cls.COLOR_TABLE_GRID = colors.HexColor(color_table_grid)
+        cls.COLOR_TABLE_TEXT = colors.HexColor(color_table_text)
