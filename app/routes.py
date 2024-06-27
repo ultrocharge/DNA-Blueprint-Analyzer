@@ -14,9 +14,9 @@ main = Blueprint('main', __name__)
 # Control Files
 @main.route('/process_and_download', methods=['POST'])
 def process_and_download():
-    pdfInfo = json.loads(request.form.get('pdfInfo'))
+    pdfSettings = json.loads(request.form.get('pdfSettings'))
     uploadFiles = request.files.getlist('uploadFiles')
-    return analyze.process_and_download(files=uploadFiles, pdfInfo=pdfInfo)
+    return analyze.process_and_download(files=uploadFiles, pdfSettings=pdfSettings)
 
 # Authentication
 @main.route("/register", methods=['POST'])
