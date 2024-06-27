@@ -20,18 +20,22 @@ enum COLORS {
 interface PDF {
     textBackgroundColor:string,
     textColor:string,
+    tableGridColor:string,
+    tableTextColor:string,
 };
 
 export default function DashboardForm() {
     const [formData, setFormData] = useState<PDF>({
         textBackgroundColor:CONSTANTS.lightpurple,
         textColor:CONSTANTS.purple,
+        tableGridColor:CONSTANTS.lightgrey,
+        tableTextColor:CONSTANTS.grey,
     });
 
     const [checkedRadio, setCheckedRadio] = useState(COLORS.purple);
     const [uploadFiles, setUploadFiles] = useState([]);
     const [uploadFileNames, setUploadFileNames] = useState<string[]>([]);
-    
+    const [visible, setVisible] = useState<boolean>(false);
     const handleInput = (e:any) => {
         setFormData(prevState => ({
             ...prevState,
@@ -43,9 +47,13 @@ export default function DashboardForm() {
         setFormData({
             textBackgroundColor:CONSTANTS.lightpurple,
             textColor:CONSTANTS.purple,
+            tableGridColor:CONSTANTS.lightgrey,
+            tableTextColor:CONSTANTS.grey,
         });
 
-        setCheckedRadio(COLORS.purple)
+        setCheckedRadio(COLORS.purple);
+        setUploadFileNames([]);
+        setUploadFiles([]);
     };
 
     const getCurrentDateTime = () => {
@@ -53,15 +61,16 @@ export default function DashboardForm() {
         const date = now.toLocaleDateString(); // Format: MM/DD/YYYY
         const time = now.toLocaleTimeString(); // Format: HH:MM:SS AM/PM
         return `${date} ${time}`;
-      };
-
+    };
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
-
-        const pdfInfo:PDF = {
+        setVisible(true)
+        const pdfSettings:PDF = {
             textBackgroundColor: formData.textBackgroundColor,
             textColor: formData.textColor,
+            tableGridColor: formData.tableGridColor,
+            tableTextColor: formData.tableTextColor,
         };
         
         const uploadFormData = new FormData();
@@ -70,7 +79,7 @@ export default function DashboardForm() {
                 uploadFormData.append('uploadFiles', file);
             });
 
-            uploadFormData.append('pdfInfo', JSON.stringify(pdfInfo));
+            uploadFormData.append('pdfSettings', JSON.stringify(pdfSettings));
             
             const response = await processAndDownload(uploadFormData);
             
@@ -84,8 +93,12 @@ export default function DashboardForm() {
                 link.click();
                 document.body.removeChild(link);
 
-                message.success('Download Successful!')
-            };
+                message.success('Download Successful!');
+                setVisible(false);
+            } else {
+                message.warning('CSV file is invalid!');
+                setVisible(false);
+            }
         }
 
         removeState();
@@ -171,7 +184,7 @@ export default function DashboardForm() {
 
                 <div className="text-center ">
                     <div className="flex text-sm items-center leading-6 text-gray-600 justify-center">
-                        <label className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500 outline-none">
+                        <label className="relative cursor-pointer bg-white font-semibold text-indigo-600 hover:text-indigo-500 border-none outline-none">
                             <BsFiletypeCsv size={50} color="gray" className="block xs:hidden"/>
                             <span className="hidden xs:block">Browse</span>
                             <input id="file-upload" name="file-upload" type="file" className="sr-only hidden xs:block" required onChange={handleUpload} multiple accept=".csv"/>
@@ -226,13 +239,13 @@ export default function DashboardForm() {
                             </div>
                         </fieldset>
 
-                        <div className="flex xs:flex-row flex-col w-full justify-between gap-2 mt-2 xs:mt-5">
+                        <div className="flex xs:flex-row flex-col w-full justify-between gap-2 sm:gap-5 mt-2 xs:mt-5">
                             <div>
-                                <div className="flex items-center xs:justify-between gap-2">
+                                <div className="flex items-center gap-2">
                                     <p className="block text-xs font-medium leading-6 text-gray-900">Background Color:</p>
 
-                                    <div className="group relative cursor-pointer xs:max-w-fit min-w-fit">
-                                        <div className="absolute hidden group-hover:block whitespace-nowrap -top-1 w-full">
+                                    <div className="group relative cursor-pointer sm:max-w-fit min-w-fit">
+                                        <div className="absolute hidden group-hover:block whitespace-normal sm:whitespace-nowrap -top-1 w-full">
                                             <div className="flex flex-col justify-start items-center -translate-y-full">
                                                 <div className="bg-gray-700 shadow-md text-white rounded-md py-1 px-3 text-xs">
                                                     This color is used for Name Background, Name Grid, Table Box
@@ -261,7 +274,7 @@ export default function DashboardForm() {
                                         <input
                                             type="text"
                                             name="textBackgroundColor"
-                                            className="w-full rounded-md border-0 py-1 px-2 text-sm text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            className="w-full rounded-md border-0 px-1 py-1.5 text-xs text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
                                             value={formData.textBackgroundColor}
                                             onChange={handleInput}
@@ -278,7 +291,7 @@ export default function DashboardForm() {
                                         <input
                                             type="color"
                                             name="textColor"
-                                            className="w-full rounded-md border-0 p-1 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            className="w-full rounded-md border-0 p-1 text-xs outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                             required
                                             value={formData.textColor}
                                             onChange={handleInput}
@@ -289,9 +302,68 @@ export default function DashboardForm() {
                                         <input
                                             type="text"
                                             name="textColor"
-                                            className="w-full rounded-md border-0 py-1 px-2 text-sm outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
+                                            className="w-full rounded-md border-0 p-1.5 text-xs outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
                                             required
                                             value={formData.textColor}
+                                            onChange={handleInput}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div className="flex xs:flex-row flex-col w-full justify-between gap-2 sm:gap-5 mt-2 xs:mt-5">
+                            <div>
+                                <p className="block text-xs font-medium leading-6 text-gray-900">Table Grid Color:</p>
+
+                                <div className="flex flex-row gap-2 w-full mt-2">
+                                    <div className="flex-1 w-1/2">
+                                        <input
+                                            type="color"
+                                            name="tableGridColor"
+                                            className=" rounded-md border-0 p-1 outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 w-full"
+                                            required
+                                            value={formData.tableGridColor}
+                                            onChange={handleInput}
+                                        />
+                                    </div>
+
+                                    <div className="flex-1 w-1/2">
+                                        <input
+                                            type="text"
+                                            name="tableGridColor"
+                                            className="w-full rounded-md border-0 p-1.5 text-xs text-center outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            required
+                                            value={formData.tableGridColor}
+                                            onChange={handleInput}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p className="block text-xs font-medium leading-6 text-gray-900">Table Text Color:</p>
+
+                                <div className="flex flex-row gap-2 w-full mt-2">
+                                    <div className="flex-1 w-1/2">
+                                        <input
+                                            type="color"
+                                            name="tableTextColor"
+                                            className="w-full rounded-md border-0 p-1 text-xs outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
+                                            required
+                                            value={formData.tableTextColor}
+                                            onChange={handleInput}
+                                        />
+                                    </div>
+
+                                    <div className="flex-1 w-1/2">
+                                        <input
+                                            type="text"
+                                            name="tableTextColor"
+                                            className="w-full rounded-md border-0 p-1.5 text-xs outline-none ring-1 ring-inset ring-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-center"
+                                            required
+                                            value={formData.tableTextColor}
                                             onChange={handleInput}
                                         />
                                     </div>
@@ -303,7 +375,15 @@ export default function DashboardForm() {
             </div>
             
             <div className="mt-5 sm:mt-10">
-                <button type="submit" className="w-full rounded-lg bg-indigo-700 text-white text-sm font-semibold p-2">Analyze & Download</button>
+                <button type="submit" className="group w-full rounded-lg hover:bg-indigo-500 bg-indigo-600 text-white text-sm font-semibold p-2 flex items-center gap-2 justify-center">
+                    <svg className={`h-3 w-3 animate-spin text-white ${visible ? 'block' : 'hidden'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p>
+                        Analyze & Download
+                    </p>
+                </button>
             </div>
         </form>
     )
