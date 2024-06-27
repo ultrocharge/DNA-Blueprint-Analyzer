@@ -65,7 +65,9 @@ export default function DashboardForm() {
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
-        setVisible(true)
+
+        setVisible(true);
+
         const pdfSettings:PDF = {
             textBackgroundColor: formData.textBackgroundColor,
             textColor: formData.textColor,
@@ -94,9 +96,11 @@ export default function DashboardForm() {
                 document.body.removeChild(link);
 
                 message.success('Download Successful!');
+
                 setVisible(false);
             } else {
                 message.warning('CSV file is invalid!');
+                
                 setVisible(false);
             }
         }
