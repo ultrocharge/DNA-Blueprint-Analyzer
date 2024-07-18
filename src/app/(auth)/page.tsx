@@ -3,7 +3,7 @@ import LoginForm from "./_component/LoginForm";
 
 export default function Login() {
     return (
-        <div className="flex w-full max-w-lg flex-col justify-center rounded-xl bg-white px-4 py-10 shadow-lg">
+        <div className="flex w-full max-w-lg flex-col justify-center rounded-xl bg-white px-4 py-10 shadow-lg dark:bg-gray-700 text-black dark:text-white">
             <div className="mx-auto">
                 <h2 className="text-xl xs:text-2xl font-bold tracking-tight">
                     Sign in to your account
