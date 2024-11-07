@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -34,3 +35,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+=======
+
+## Create a virtual environment named "venv"
+```python -m venv venv```
+
+## Activate the virtual environment
+#### On Windows:
+```venv\Scripts\activate```
+#### On macOS and Linux:
+```source venv/bin/activate```
+
+#### Install dependencies listed in requirements.txt
+```pip install -r requirements.txt```
+
+#### Run
+```python -m flask run```
+
+## About Project
+
+Python upload script for exporting Genetics BLUE PRINT PDFs with dog names in its center.
+>>>>>>> backend-branch

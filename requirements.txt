@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-JWT-Extended
+flask_cors
+mysqlclient
+python-dotenv
+pandas
+reportlab
+pymysql
